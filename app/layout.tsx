@@ -3,8 +3,7 @@ import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
-import { ScrollProvider } from '@/components/providers/scroll-provider';
-import { GSAPProvider } from '@/components/providers/gsap-provider';
+import { SmoothScrollProvider } from '@/components/providers/smooth-scroll-provider';
 import { siteConfig } from '@/config/site';
 
 const fraunces = Fraunces({
@@ -66,16 +65,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
       <body className="font-sans antialiased">
-        <GSAPProvider>
-          <ScrollProvider>
-            <div className="paper-grain" />
-            <div className="relative flex min-h-screen flex-col">
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </ScrollProvider>
-        </GSAPProvider>
+        <SmoothScrollProvider>
+          <div className="paper-grain" />
+          <div className="relative flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </SmoothScrollProvider>
       </body>
     </html>
   );

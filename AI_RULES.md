@@ -44,6 +44,15 @@ REQUIRED:
 
 Install via shadcn/registry when possible. Do not reinvent components that registries already provide.
 
+## Motion Stack
+- **Lenis** → smooth scrolling, wired in `components/providers/smooth-scroll-provider.tsx` and driven by the GSAP ticker
+- **GSAP + ScrollTrigger** → section/timeline animation. Register via `lib/gsap.ts`; build with `components/motion/*`
+- **React Bits** → selected animated components in `components/react-bits/*` (copy-paste distribution, no npm package)
+- **Magic UI / Aceternity** → still valid for their strengths (marquees, tickers, spotlight, bento)
+- Respect `prefers-reduced-motion` everywhere — every helper skips or simplifies its animation
+- Do not stack every effect on every section; motion must support hierarchy and clarity, not distract
+- Keep motion cheap: transform/opacity only, kill timelines/ScrollTriggers on unmount
+
 ## Plan-First Protocol
 Before coding:
 1. Read AI_RULES.md + DESIGN.md + FEATURE_CATALOG.md + MEMORY.md
@@ -66,6 +75,9 @@ Before coding:
 - UI primitives: `components/ui/` (shadcn — do NOT hand-edit these files)
 - Magic UI: `components/magicui/`
 - Aceternity-style: `components/aceternity/`
+- React Bits: `components/react-bits/`
+- GSAP motion helpers: `components/motion/`
+- Providers: `components/providers/`
 - Marketing / section blocks: `components/sections/`
 - Shared building blocks: `components/shared/`
 - Layout chrome: `components/layout/`

@@ -34,6 +34,18 @@ Reuse first — only add a component when nothing below fits.
 - `Reveal` — components/shared/reveal.tsx
 - `SectionLabel` — components/shared/section-label.tsx
 
+## Motion
+- `SmoothScrollProvider` — components/providers/smooth-scroll-provider.tsx
+- `useLenis` — hooks/use-lenis.ts
+- `usePrefersReducedMotion` — hooks/use-prefers-reduced-motion.ts
+- `FadeInOnScroll` — components/motion/fade-in-on-scroll.tsx
+- `StaggerReveal` — components/motion/stagger-reveal.tsx
+- `ParallaxSection` — components/motion/parallax-section.tsx
+- `SplitText` (React Bits) — components/react-bits/split-text.tsx
+- `ShinyText` (React Bits) — components/react-bits/shiny-text.tsx
+- `StarBorder` (React Bits) — components/react-bits/star-border.tsx
+- `Squares` (React Bits) — components/react-bits/squares.tsx
+
 ## shadcn/ui primitives (do NOT hand-edit)
 components/ui/* — button, card, dialog, sheet, table, tabs, form, input, select, badge,
 dropdown-menu, tooltip, sonner/toast, and more.
