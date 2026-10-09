@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import { useGSAP } from '@gsap/react';
-import { gsap, SplitText as GSAPSplitText, DESIGN_EASE } from '@/lib/gsap';
+import { gsap, ScrollTrigger, SplitText as GSAPSplitText, DESIGN_EASE } from '@/lib/gsap';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { cn } from '@/lib/utils';
 
@@ -156,6 +156,12 @@ export function SplitText({
             ease: DESIGN_EASE,
             stagger: delay / 1000,
             onComplete: finish,
+            // The line reveal has to wait for the section to be reached —
+            // without this every heading on the page plays at load and the
+            // whole document looks static while scrolling.
+            scrollTrigger: trigger
+              ? { trigger: el, start: 'top 88%', once: true }
+              : undefined,
           });
         },
       });
@@ -168,12 +174,16 @@ export function SplitText({
     }
 
     return () => {
+      ScrollTrigger.getAll().forEach((instance) => {
+        if (instance.trigger === el) instance.kill();
+      });
       split?.kill();
       split?.revert();
       gsap.killTweensOf(el.querySelectorAll('.split-accent__fill'));
+      gsap.killTweensOf(el.querySelectorAll('.split-line'));
       el.classList.remove('split-lines--ready', 'split-lines--filled');
     };
-  }, [isLines, reduced, text, delay, duration, maskLines, onComplete]);
+  }, [isLines, reduced, text, delay, duration, maskLines, onComplete, trigger]);
 
   return (
     <span ref={scope} className={cn(isLines && 'split-lines', className)} aria-label={text}>

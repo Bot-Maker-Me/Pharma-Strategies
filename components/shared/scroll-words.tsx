@@ -11,6 +11,8 @@ interface ScrollWordsProps {
   /** Words drawn in the red accent (matched case- and punctuation-insensitively). */
   accent?: string[];
   className?: string;
+  /** Seconds between words as the scrub advances. */
+  stagger?: number;
   /** ScrollTrigger start/end for the scrub range. */
   start?: string;
   end?: string;
@@ -19,19 +21,20 @@ interface ScrollWordsProps {
 const normalise = (word: string) => word.replace(/[^a-zA-Z]/g, '').toLowerCase();
 
 /**
- * Scroll-linked word reveal: every word brightens in sequence as the block
- * travels through the viewport. Opacity (+ a few px of travel) only, scrubbed
- * by ScrollTrigger, so it stays cheap and never fights Lenis.
+ * Scroll-linked word reveal. Each word lifts and brightens in sequence as the
+ * block travels through the viewport, scrubbed by ScrollTrigger. Accent words
+ * travel further and land last so they read as stamped.
  *
  * Render inside a heading/paragraph element — the type styles belong there.
- * Under reduced motion the final state is shown, no scroll listener is created.
+ * Transform + opacity only; under reduced motion the final state is shown.
  */
 export function ScrollWords({
   text,
   accent = [],
   className,
-  start = 'top 82%',
-  end = 'bottom 62%',
+  stagger = 0.45,
+  start = 'top 85%',
+  end = 'bottom 55%',
 }: ScrollWordsProps) {
   const scope = useRef<HTMLSpanElement>(null);
   const reduced = usePrefersReducedMotion();
@@ -41,30 +44,49 @@ export function ScrollWords({
   useGSAP(
     () => {
       if (reduced || !scope.current) return;
-      const targets = gsap.utils.toArray<HTMLElement>(
-        scope.current.querySelectorAll('[data-word]')
-      );
-      if (!targets.length) return;
 
-      gsap.fromTo(
-        targets,
-        { opacity: 0.12, y: 14 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: 'none',
-          stagger: 0.32,
-          scrollTrigger: {
-            trigger: scope.current,
-            start,
-            end,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-          },
-        }
+      // Accent words get their own tween, so they are excluded here to avoid
+      // two tweens fighting over the same element's transform.
+      const body = gsap.utils.toArray<HTMLElement>(
+        scope.current.querySelectorAll('[data-word]:not([data-word-accent])')
       );
+      const accents = gsap.utils.toArray<HTMLElement>(
+        scope.current.querySelectorAll('[data-word-accent]')
+      );
+      if (!body.length && !accents.length) return;
+
+      const trigger = () => ({
+        trigger: scope.current,
+        start,
+        end,
+        scrub: 0.75,
+        invalidateOnRefresh: true,
+      });
+
+      if (body.length) {
+        gsap.fromTo(
+          body,
+          { opacity: 0.06, y: 30 },
+          { opacity: 1, y: 0, ease: 'none', stagger, scrollTrigger: trigger() }
+        );
+      }
+
+      if (accents.length) {
+        gsap.fromTo(
+          accents,
+          { y: 46, opacity: 0.1 },
+          {
+            y: 0,
+            opacity: 1,
+            ease: 'power2.out',
+            duration: 1,
+            stagger: stagger * 2.6,
+            scrollTrigger: trigger(),
+          }
+        );
+      }
     },
-    { scope, dependencies: [reduced, text, start, end] }
+    { scope, dependencies: [reduced, text, start, end, stagger] }
   );
 
   return (
@@ -75,6 +97,7 @@ export function ScrollWords({
           <span key={`${word}-${index}`} className="inline-block whitespace-nowrap">
             <span
               data-word
+              data-word-accent={isAccent ? '' : undefined}
               aria-hidden
               className={cn('inline-block will-change-transform', isAccent && 'text-accentRed')}
             >

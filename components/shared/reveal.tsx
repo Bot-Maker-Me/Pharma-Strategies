@@ -2,9 +2,11 @@
 
 import { motion, type Variants } from 'framer-motion';
 import { type ReactNode } from 'react';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { cn } from '@/lib/utils';
 
 const defaultVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 48 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -16,21 +18,26 @@ interface RevealProps {
   variants?: Variants;
 }
 
+/**
+ * Content reveal. Long enough (0.95s) and far enough (48px) to actually read as
+ * motion, with the design easing curve and a single shared ScrollTrigger-free
+ * intersection observer per element.
+ */
 export function Reveal({
   children,
   delay = 0,
-  duration = 0.5,
+  duration = 0.95,
   className,
   variants = defaultVariants,
 }: RevealProps) {
   return (
     <motion.div
-      className={className}
+      className={cn(className)}
       variants={variants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
+      transition={{ duration, delay, ease: DESIGN_EASE_ARRAY }}
     >
       {children}
     </motion.div>

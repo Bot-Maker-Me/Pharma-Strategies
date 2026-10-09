@@ -3,8 +3,9 @@
 import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
 import { motion, useSpring, useTransform, type MotionValue } from 'framer-motion';
-import { gsap, ScrollTrigger, DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { gsap, ScrollTrigger, DESIGN_EASE, DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { Magnet, SplitText } from '@/components/react-bits';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 
@@ -19,6 +20,9 @@ const ledgerRows = [
   { date: '06 Oct 26', drug: 'Hydromorphone 2mg', qtyIn: '40', qtyOut: '38', balance: '2' },
   { date: '05 Oct 26', drug: 'Oxycodone 5mg', qtyIn: '50', qtyOut: '45', balance: '5' },
 ];
+
+/** Date and the three numeric columns are fixed; the drug name takes the rest. */
+const SHEET_GRID = 'grid grid-cols-[5.5rem_minmax(0,1fr)_2.5rem_2.5rem_2.5rem] gap-2';
 
 interface DriftingChipProps {
   children: ReactNode;
@@ -41,7 +45,8 @@ function DriftingChip({ children, className, depth = 1, mouseX, mouseY, reduced 
         animate={reduced ? undefined : { y: [0, -6, 0] }}
         transition={reduced ? undefined : { duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       >
-        {children}
+        {/* Plain wrapper for the GSAP intro so it never fights Framer's transform. */}
+        <div data-hero-chip>{children}</div>
       </motion.div>
     </motion.div>
   );
@@ -50,7 +55,7 @@ function DriftingChip({ children, className, depth = 1, mouseX, mouseY, reduced 
 export function HeroNew() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const ledgerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   const reduced = usePrefersReducedMotion();
@@ -103,6 +108,33 @@ export function HeroNew() {
     window.addEventListener('resize', detect);
     return () => window.removeEventListener('resize', detect);
   }, []);
+
+  // Intro: eyebrow → copy → CTAs → the register frame opening → the chips.
+  // Runs as a layout effect (before paint) so nothing flashes at full opacity.
+  useGSAP(
+    () => {
+      if (reduced || !sectionRef.current) return;
+
+      const timeline = gsap.timeline({ defaults: { ease: DESIGN_EASE, duration: 1.05 } });
+      timeline
+        .from('[data-hero-label]', { opacity: 0, x: -22, duration: 0.85 }, 0.1)
+        .from('[data-hero-para]', { opacity: 0, y: 28 }, 0.7)
+        .from('[data-hero-cta]', { opacity: 0, y: 28, duration: 0.9, stagger: 0.12 }, 0.85)
+        .from(
+          '[data-hero-stage]',
+          {
+            opacity: 0,
+            y: 70,
+            scale: 0.94,
+            clipPath: 'inset(16% 10% 16% 10% round 14px)',
+            duration: 1.4,
+          },
+          0.45
+        )
+        .from('[data-hero-chip]', { opacity: 0, y: 32, duration: 0.9, stagger: 0.15 }, 1.3);
+    },
+    { scope: sectionRef, dependencies: [reduced] }
+  );
 
   // Chips parallax with the pointer.
   useEffect(() => {
@@ -179,7 +211,7 @@ export function HeroNew() {
     };
   }, [reduced]);
 
-  // Scroll out: scrub the headline down and lift the ledger.
+  // Scroll out: scrub the headline down and lift the register.
   useEffect(() => {
     const section = sectionRef.current;
     if (!section || reduced) return;
@@ -189,10 +221,10 @@ export function HeroNew() {
         scrollTrigger: { trigger: section, start: 'top top', end: 'bottom top', scrub: true },
       });
       if (headlineRef.current) {
-        timeline.to(headlineRef.current, { scale: 0.94, opacity: 0.3, ease: 'none' }, 0);
+        timeline.to(headlineRef.current, { scale: 0.92, opacity: 0.18, ease: 'none' }, 0);
       }
-      if (ledgerRef.current) {
-        timeline.to(ledgerRef.current, { y: -80, ease: 'none' }, 0);
+      if (stageRef.current) {
+        timeline.to(stageRef.current, { y: -120, ease: 'none' }, 0);
       }
     }, section);
 
@@ -239,66 +271,81 @@ export function HeroNew() {
       </div>
 
       <div className="ed-container relative z-10 flex min-h-[calc(100vh-72px)] items-center">
-        <div className="grid w-full grid-cols-1 items-center gap-12 py-16 lg:grid-cols-12">
-          {/* Left: text */}
-          <div className="lg:col-span-7">
-            <p className="mb-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-secondaryText">
-              <span className="h-px w-8 bg-accentRed" />
+        <div className="grid w-full grid-cols-1 items-center gap-16 py-20 lg:grid-cols-12 lg:gap-8">
+          {/* Left: copy */}
+          <div className="lg:col-span-6">
+            <p
+              data-hero-label
+              className="mb-6 flex items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-secondaryText"
+            >
+              <span aria-hidden className="h-px w-8 bg-accentRed" />
               § 01 — THE REGISTER
             </p>
+
             <h1
               ref={headlineRef}
-              className="mb-6 font-heading text-[clamp(3rem,6.5vw,7rem)] font-light leading-[1.1] text-primaryText"
+              className="mb-7 font-heading text-[clamp(2.5rem,4.6vw,4.5rem)] font-normal leading-[1.06] text-primaryText"
               style={{ willChange: 'transform, opacity' }}
             >
               <SplitText
                 text="Every controlled substance, COUNTED and signed."
                 splitType="lines"
-                delay={100}
-                duration={0.9}
+                delay={110}
+                duration={1.1}
                 highlight="COUNTED"
               />
             </h1>
-            <p className="mb-8 max-w-xl font-sans text-lg text-secondaryText">
+
+            <p data-hero-para className="mb-9 max-w-xl font-sans text-lg text-secondaryText">
               Built with audit trails and electronic signatures for pharmaceutical and care
               operations teams.
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Magnet padding={80} magnetStrength={0.3}>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center rounded-button bg-accentRed px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-midnight shadow-[0_24px_60px_-28px_rgba(194,59,59,0.85)] transition-colors hover:bg-accentRedBright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accentRed active:translate-y-1"
-                >
-                  Book a demo
-                </Link>
-              </Magnet>
-              <Magnet padding={80} magnetStrength={0.3}>
-                <Link
-                  href="/apps"
-                  className="group inline-flex items-center font-mono text-xs uppercase tracking-widest text-accentRed transition-colors hover:text-primaryText"
-                >
-                  View all apps
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Magnet>
+
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+              <div data-hero-cta>
+                <Magnet padding={80} magnetStrength={0.3}>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center rounded-button bg-accentRed px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-midnight shadow-[0_24px_60px_-28px_rgba(194,59,59,0.85)] transition-colors hover:bg-accentRedBright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accentRed"
+                  >
+                    Book a demo
+                  </Link>
+                </Magnet>
+              </div>
+              <div data-hero-cta>
+                <Magnet padding={80} magnetStrength={0.3}>
+                  <Link
+                    href="/apps"
+                    className="group inline-flex items-center font-mono text-xs uppercase tracking-widest text-accentRed transition-colors hover:text-primaryText"
+                  >
+                    View all apps
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </Magnet>
+              </div>
             </div>
           </div>
 
-          {/* Right: floating ledger composition */}
-          <div className="relative lg:col-span-5">
-            <div ref={ledgerRef} className="relative h-[520px]" style={{ willChange: 'transform' }}>
+          {/* Right: the register, inside a frame that opens on load */}
+          <div className="lg:col-span-6">
+            <div
+              ref={stageRef}
+              data-hero-stage
+              className="relative h-[540px] w-full"
+              style={{ clipPath: 'inset(0% 0% 0% 0% round 14px)', willChange: 'transform' }}
+            >
               <motion.div
                 className="absolute inset-0"
                 style={{
                   rotateX: tiltX,
                   rotateY: tiltY,
-                  transformPerspective: 1000,
+                  transformPerspective: 1200,
                   transformStyle: 'preserve-3d',
                 }}
               >
                 {/* Counted-today tile */}
                 <DriftingChip
-                  className="absolute -top-4 right-0 z-30 w-32"
+                  className="absolute right-0 top-0 z-30 w-36"
                   depth={0.8}
                   mouseX={pointerX}
                   mouseY={pointerY}
@@ -315,32 +362,34 @@ export function HeroNew() {
                 {/* Ledger sheet */}
                 <div
                   ref={sheetRef}
-                  className="paper-sheet absolute right-0 top-12 w-[560px] rounded-[10px] p-6"
+                  className="paper-sheet absolute right-0 top-16 w-full max-w-[540px] rounded-[10px] p-6 pb-28"
                 >
                   <div
                     aria-hidden
-                    className="absolute bottom-0 left-2 right-0 top-2 rounded-[10px] border border-midnight/10 bg-creamSheet/70"
-                    style={{ transform: 'rotate(2deg)' }}
+                    className="absolute -bottom-3 left-3 right-3 top-3 rotate-[1.2deg] rounded-[10px] border border-midnight/10 bg-creamSheet/60"
                   />
 
                   {/* Sheen that follows the cursor (transform + opacity only) */}
-                  <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
+                  <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-[10px]">
                     <motion.div
                       aria-hidden
-                      className="ledger-sheen absolute left-0 top-0 h-[440px] w-[440px] rounded-full mix-blend-soft-light"
+                      className="ledger-sheen absolute left-0 top-0 h-[440px] w-[440px] rounded-full"
                       style={{ x: sheenX, y: sheenY, opacity: sheenOpacity }}
                     />
                   </div>
 
                   {/* Header */}
-                  <div className="relative z-10 mb-4 w-full border-b border-hairline pb-3">
-                    <div className="flex font-mono text-[10px] uppercase tracking-widest text-midnight/60">
-                      <div className="w-[100px] whitespace-nowrap">Date</div>
-                      <div className="flex-1 pr-4">Drug</div>
-                      <div className="w-12 text-right">In</div>
-                      <div className="w-12 text-right">Out</div>
-                      <div className="w-12 text-right">Bal</div>
-                    </div>
+                  <div className={`relative z-10 ${SHEET_GRID} border-b border-midnight/15 pb-3`}>
+                    {['Date', 'Drug', 'In', 'Out', 'Bal'].map((heading, index) => (
+                      <div
+                        key={heading}
+                        className={`font-mono text-[10px] uppercase tracking-widest text-midnight/60 ${
+                          index > 1 ? 'text-right' : ''
+                        }`}
+                      >
+                        {heading}
+                      </div>
+                    ))}
                   </div>
 
                   {/* Rows */}
@@ -348,16 +397,16 @@ export function HeroNew() {
                     {ledgerRows.slice(0, visibleRows).map((row, index) => (
                       <motion.div
                         key={index}
-                        initial={reduced ? false : { opacity: 0, x: -10 }}
+                        initial={reduced ? false : { opacity: 0, x: -14 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.15, ease: DESIGN_EASE_ARRAY }}
-                        className="flex py-1.5 font-mono text-xs tabular-nums text-midnight"
+                        transition={{ duration: 0.45, ease: DESIGN_EASE_ARRAY }}
+                        className={`${SHEET_GRID} py-1.5 font-mono text-xs tabular-nums text-midnight`}
                       >
-                        <div className="w-[100px] whitespace-nowrap">{row.date}</div>
-                        <div className="flex-1 pr-4 font-sans">{row.drug}</div>
-                        <div className="w-12 text-right">{row.qtyIn}</div>
-                        <div className="w-12 text-right">{row.qtyOut}</div>
-                        <div className="w-12 text-right">{row.balance}</div>
+                        <div className="whitespace-nowrap">{row.date}</div>
+                        <div className="truncate font-sans">{row.drug}</div>
+                        <div className="text-right">{row.qtyIn}</div>
+                        <div className="text-right">{row.qtyOut}</div>
+                        <div className="text-right">{row.balance}</div>
                       </motion.div>
                     ))}
                   </div>
@@ -365,10 +414,10 @@ export function HeroNew() {
                   {/* VERIFIED stamp */}
                   {showStamp && (
                     <motion.div
-                      initial={reduced ? false : { scale: 1.15, opacity: 0, rotate: -12 }}
-                      animate={{ scale: 1, opacity: 0.9, rotate: -12 }}
-                      transition={{ duration: 0.25, ease: DESIGN_EASE_ARRAY }}
-                      className="absolute bottom-4 right-4 z-20 flex h-20 w-20 items-center justify-center rounded-full border-4 border-accentRed bg-accentRed/10"
+                      initial={reduced ? false : { scale: 1.4, opacity: 0, rotate: -12 }}
+                      animate={{ scale: 1, opacity: 0.92, rotate: -12 }}
+                      transition={{ duration: 0.55, ease: DESIGN_EASE_ARRAY }}
+                      className="absolute bottom-5 right-5 z-20 flex h-20 w-20 items-center justify-center rounded-full border-4 border-accentRed bg-accentRed/10"
                     >
                       <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-accentRed">
                         Verified
@@ -377,9 +426,9 @@ export function HeroNew() {
                   )}
                 </div>
 
-                {/* Signature chip */}
+                {/* Signatures */}
                 <DriftingChip
-                  className="absolute bottom-0 left-0 z-30 w-48"
+                  className="absolute left-0 top-[400px] z-30 w-48"
                   depth={1.4}
                   mouseX={pointerX}
                   mouseY={pointerY}
@@ -387,7 +436,7 @@ export function HeroNew() {
                 >
                   <div className="glass-panel rounded-panel p-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-midnight/30">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-midnight/40">
                         <span className="font-mono text-xs text-primaryText">JD</span>
                       </div>
                       <div className="flex-1">
@@ -398,16 +447,16 @@ export function HeroNew() {
                   </div>
                 </DriftingChip>
 
-                {/* Alert card */}
+                {/* Discrepancy alert */}
                 <DriftingChip
-                  className="absolute -bottom-16 left-0 z-30 w-64"
+                  className="absolute bottom-0 right-0 z-30 w-72"
                   depth={1.8}
                   mouseX={pointerX}
                   mouseY={pointerY}
                   reduced={reduced}
                 >
                   <div className="glass-panel rounded-panel border-l-4 border-l-accentRed p-4">
-                    <p className="font-mono text-xs text-primaryText">
+                    <p className="font-mono text-xs leading-relaxed text-primaryText">
                       Discrepancy detected: Oxycodone 5mg, count off by 2
                     </p>
                   </div>
@@ -423,8 +472,8 @@ export function HeroNew() {
         <p className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">Scroll</p>
         <motion.div
           className="h-8 w-px bg-hairline"
-          animate={reduced ? undefined : { y: [0, 8, 0] }}
-          transition={reduced ? undefined : { duration: 1.5, repeat: Infinity }}
+          animate={reduced ? undefined : { y: [0, 10, 0], opacity: [0.4, 1, 0.4] }}
+          transition={reduced ? undefined : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
     </section>

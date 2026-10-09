@@ -3,6 +3,8 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { RevealFrame } from '@/components/motion/reveal-frame';
+import { StaggerReveal } from '@/components/motion/stagger-reveal';
 
 const steps = [
   {
@@ -112,7 +114,7 @@ export function HowItWorksNew() {
             />
 
             {/* Steps */}
-            <div className="space-y-16 pl-8">
+            <StaggerReveal className="space-y-16 pl-8" stagger={0.18} y={52}>
               {steps.map((step, index) => (
                 <div key={index} className="relative">
                   {/* Roman numeral background */}
@@ -134,15 +136,15 @@ export function HowItWorksNew() {
                   </div>
                 </div>
               ))}
-            </div>
+            </StaggerReveal>
           </div>
 
           {/* Right: UI previews */}
           <div className="space-y-16">
             {steps.map((step, index) => (
-              <div key={index} className="glass-panel rounded-panel p-4">
+              <RevealFrame key={index} delay={index * 0.12} className="glass-panel rounded-panel p-4">
                 {step.ui}
-              </div>
+              </RevealFrame>
             ))}
           </div>
         </div>

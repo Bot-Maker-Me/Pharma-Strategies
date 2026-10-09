@@ -26,16 +26,18 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     const start = () => {
       if (lenisRef.current) return;
 
+      // `lerp` keeps the interpolation frame-rate independent and consistently
+      // smooth, where duration + easing can stall on long pages.
       const instance = new Lenis({
-        duration: 1.05,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        lerp: 0.095,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.4,
+        syncTouch: false,
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.5,
         autoRaf: false,
-        anchors: { offset: -80 },
+        anchors: { offset: -88 },
       });
 
       // Keep ScrollTrigger in sync with Lenis' virtual scroll position.

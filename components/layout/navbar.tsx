@@ -26,9 +26,7 @@ export function Navbar() {
     <header
       className={cn(
         'sticky top-0 z-50 w-full transition-all duration-300',
-        scrolled
-          ? 'border-b border-hairline bg-midnight/85 backdrop-blur-xl'
-          : 'border-b border-transparent bg-transparent'
+        scrolled ? 'glass-blur border-b border-hairline' : 'border-b border-transparent'
       )}
     >
       <nav className="ed-container flex h-[72px] items-center justify-between">

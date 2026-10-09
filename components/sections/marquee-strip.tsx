@@ -32,7 +32,7 @@ function Row({
     <Marquee
       reverse={reverse}
       pauseOnHover
-      repeat={3}
+      repeat={2}
       className="p-0 [--duration:46s] [--gap:2.5rem]"
       aria-hidden
     >

@@ -22,6 +22,9 @@ export const DESIGN_EASE_ARRAY: [number, number, number, number] = [0.22, 1, 0.3
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
   CustomEase.create(DESIGN_EASE, 'M0,0 C0.22,1 0.36,1 1,1');
+  // Mobile browsers fire a resize whenever the URL bar shows/hides; refreshing
+  // ScrollTrigger on those is what makes pinned/scrubbed sections stutter.
+  ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 export { gsap, ScrollTrigger, SplitText, CustomEase };

@@ -4,6 +4,8 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { RevealFrame } from '@/components/motion/reveal-frame';
+import { StaggerReveal } from '@/components/motion/stagger-reveal';
 import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 
@@ -218,30 +220,32 @@ export function WhoItsFor() {
 
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* UI preview */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeRole.id}
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.45, ease: DESIGN_EASE_ARRAY }}
-              className="glass-panel overflow-hidden rounded-panel"
-            >
-              <div className="flex items-center justify-between border-b border-hairline/60 px-4 py-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
-                  {activeRole.name} · view
-                </span>
-                <span aria-hidden className="flex gap-1">
-                  {[0, 1, 2].map((dot) => (
-                    <span key={dot} className="h-1.5 w-1.5 rounded-full bg-hairline" />
-                  ))}
-                </span>
-              </div>
-              <div className="flex min-h-[16rem] items-center justify-center p-6">
-                {activeRole.ui}
-              </div>
-            </motion.div>
-          </AnimatePresence>
+          <RevealFrame className="rounded-panel" delay={0.1}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeRole.id}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -24 }}
+                transition={{ duration: 0.55, ease: DESIGN_EASE_ARRAY }}
+                className="glass-panel overflow-hidden rounded-panel"
+              >
+                <div className="flex items-center justify-between border-b border-hairline/60 px-4 py-2">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                    {activeRole.name} · view
+                  </span>
+                  <span aria-hidden className="flex gap-1">
+                    {[0, 1, 2].map((dot) => (
+                      <span key={dot} className="h-1.5 w-1.5 rounded-full bg-hairline" />
+                    ))}
+                  </span>
+                </div>
+                <div className="flex min-h-[16rem] items-center justify-center p-6">
+                  {activeRole.ui}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </RevealFrame>
 
           {/* Benefits + granted access */}
           <div>
@@ -321,14 +325,14 @@ export function WhoItsFor() {
         </div>
 
         {/* Shared foundation */}
-        <div className="mt-16 grid gap-px border border-hairline bg-hairline sm:grid-cols-3">
-          {sharedFoundation.map((item, index) => (
-            <motion.div
+        <StaggerReveal
+          className="mt-20 grid gap-px border border-hairline bg-hairline sm:grid-cols-3"
+          stagger={0.15}
+          y={40}
+        >
+          {sharedFoundation.map((item) => (
+            <div
               key={item.index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: DESIGN_EASE_ARRAY }}
               className="bg-raisedDark p-6 transition-colors duration-500 hover:bg-midnight/40"
             >
               <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-accentRed">
@@ -336,9 +340,9 @@ export function WhoItsFor() {
               </p>
               <h3 className="mb-2 font-heading text-lg text-primaryText">{item.title}</h3>
               <p className="font-sans text-sm text-secondaryText">{item.body}</p>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

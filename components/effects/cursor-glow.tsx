@@ -9,11 +9,13 @@ interface CursorGlowProps {
 }
 
 /**
- * A soft glow that trails the pointer. Dependency-free and rAF-driven (no React
- * state), composited with `screen` so it only ever lightens the UI.
- * Skipped entirely on touch devices and under reduced motion.
+ * A soft glow that trails the pointer.
+ *
+ * Perf notes: no blend mode (a blended full-screen layer forces a composite on
+ * every frame) and the rAF loop parks itself once the glow has settled, then
+ * wakes on the next pointer move. Skipped on touch devices and reduced motion.
  */
-export function CursorGlow({ size = 480, color = 'rgba(184,50,60,0.16)' }: CursorGlowProps) {
+export function CursorGlow({ size = 380, color = 'rgba(194,59,59,0.13)' }: CursorGlowProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
 
@@ -29,25 +31,42 @@ export function CursorGlow({ size = 480, color = 'rgba(184,50,60,0.16)' }: Curso
     let currentX = targetX;
     let currentY = targetY;
     let frame = 0;
+    let running = false;
+
+    const loop = () => {
+      currentX += (targetX - currentX) * 0.09;
+      currentY += (targetY - currentY) * 0.09;
+      el.style.transform = `translate3d(${(currentX - size / 2).toFixed(1)}px, ${(
+        currentY -
+        size / 2
+      ).toFixed(1)}px, 0)`;
+
+      const settled = Math.abs(targetX - currentX) < 0.4 && Math.abs(targetY - currentY) < 0.4;
+      if (settled) {
+        running = false;
+        return;
+      }
+      frame = requestAnimationFrame(loop);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      frame = requestAnimationFrame(loop);
+    };
 
     const onMove = (event: MouseEvent) => {
       targetX = event.clientX;
       targetY = event.clientY;
-    };
-
-    const loop = () => {
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
-      el.style.transform = `translate3d(${currentX - size / 2}px, ${currentY - size / 2}px, 0)`;
-      frame = requestAnimationFrame(loop);
+      start();
     };
 
     window.addEventListener('mousemove', onMove, { passive: true });
-    frame = requestAnimationFrame(loop);
 
     return () => {
       window.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(frame);
+      running = false;
     };
   }, [reduced, size]);
 
@@ -57,7 +76,7 @@ export function CursorGlow({ size = 480, color = 'rgba(184,50,60,0.16)' }: Curso
     <div
       ref={ref}
       aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-[9997] mix-blend-screen will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 z-[9997]"
       style={{
         width: size,
         height: size,

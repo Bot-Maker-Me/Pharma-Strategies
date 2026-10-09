@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { SplitText } from '@/components/react-bits';
+import { RevealFrame } from '@/components/motion/reveal-frame';
 import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 
 const nextSteps = [
@@ -79,8 +80,8 @@ export function ClosingBand() {
               <SplitText
                 text="Make every count count."
                 splitType="lines"
-                delay={120}
-                duration={0.9}
+                delay={130}
+                duration={1.1}
                 highlight="count"
               />
             </h2>
@@ -109,6 +110,7 @@ export function ClosingBand() {
           </div>
 
           {/* Right: form */}
+          <RevealFrame delay={0.2}>
           <div className="glass-panel panel-lift rounded-panel p-8 sm:p-10">
             {status === 'sent' ? (
               <motion.div
@@ -212,6 +214,7 @@ export function ClosingBand() {
               </form>
             )}
           </div>
+          </RevealFrame>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@
 import { useRef, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 
 interface Feature {
@@ -140,10 +141,11 @@ function BentoCard({ feature, index }: { feature: Feature; index: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.6, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ clipPath: 'inset(0% 0% 0% 0% round 14px)' }}
+      initial={{ opacity: 0, y: 60, scale: 0.96, clipPath: 'inset(10% 6% 10% 6% round 14px)' }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, clipPath: 'inset(0% 0% 0% 0% round 14px)' }}
+      viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
+      transition={{ duration: 1.05, delay: index * 0.09, ease: DESIGN_EASE_ARRAY }}
       onMouseMove={(event) => {
         const el = ref.current;
         if (!el) return;
@@ -152,7 +154,7 @@ function BentoCard({ feature, index }: { feature: Feature; index: number }) {
         el.style.setProperty('--my', `${event.clientY - rect.top}px`);
       }}
       className={cn(
-        'group glass-panel relative overflow-hidden rounded-panel p-6 transition-[transform,border-color] duration-500 will-change-transform hover:-translate-y-1 hover:border-accentRed/30',
+        'group glass-panel relative overflow-hidden rounded-panel p-6 transition-colors duration-500 hover:border-accentRed/30',
         sizeClass[feature.size]
       )}
     >
@@ -165,14 +167,20 @@ function BentoCard({ feature, index }: { feature: Feature; index: number }) {
         }}
       />
 
-      <div className="relative z-10">
+      <motion.div
+        initial={{ opacity: 0, y: 22 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-8% 0px -8% 0px' }}
+        transition={{ duration: 0.85, delay: index * 0.09 + 0.3, ease: DESIGN_EASE_ARRAY }}
+        className="relative z-10"
+      >
         <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-2">
           {feature.number}
         </p>
         <h3 className="font-heading text-xl text-primaryText mb-2">{feature.title}</h3>
         <p className="font-sans text-sm text-secondaryText">{feature.description}</p>
         {feature.ui}
-      </div>
+      </motion.div>
     </motion.div>
   );
 }

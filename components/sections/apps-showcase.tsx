@@ -2,10 +2,9 @@
 
 import { type ReactNode } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '@/components/shared/section-heading';
-import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { RevealFrame } from '@/components/motion/reveal-frame';
 
 /** App-window chrome — used by every mock so they read as the same product. */
 function Window({ title, children }: { title: string; children: ReactNode }) {
@@ -210,13 +209,10 @@ export function AppsShowcase() {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {appCards.map((app, index) => (
-            <motion.article
+            <RevealFrame
               key={app.name}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.7, delay: index * 0.1, ease: DESIGN_EASE_ARRAY }}
-              className="glass-panel group flex flex-col rounded-panel p-6 transition-transform duration-500 will-change-transform hover:-translate-y-1.5"
+              delay={index * 0.13}
+              className="glass-panel group flex flex-col rounded-panel p-6 transition-colors duration-500 hover:border-accentRed/30"
             >
               <div className="mb-5 flex items-center justify-between">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
@@ -244,7 +240,7 @@ export function AppsShowcase() {
                   <ArrowRight className="ml-2 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
-            </motion.article>
+            </RevealFrame>
           ))}
         </div>
       </div>

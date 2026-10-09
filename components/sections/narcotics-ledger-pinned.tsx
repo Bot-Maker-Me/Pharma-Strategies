@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { RevealFrame } from '@/components/motion/reveal-frame';
 import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 
@@ -154,6 +155,7 @@ export function NarcoticsLedgerPinned() {
 
           {/* Right: register mock, sticky while the steps advance */}
           <div className="lg:sticky lg:top-24">
+            <RevealFrame delay={0.15}>
             <div className="panel-lift rounded-panel border border-hairline bg-midnight p-4">
               <div className="rounded-panel border border-hairline bg-midnight p-4">
                 <div className="flex gap-4">
@@ -315,7 +317,8 @@ export function NarcoticsLedgerPinned() {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            </RevealFrame>
           </div>
         </div>
       </div>

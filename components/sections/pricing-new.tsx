@@ -79,10 +79,10 @@ export function PricingNew() {
           {plans.map((plan, planIndex) => (
             <motion.div
               key={plan.name}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 64 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.7, delay: planIndex * 0.1, ease: DESIGN_EASE_ARRAY }}
+              viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
+              transition={{ duration: 1, delay: planIndex * 0.13, ease: DESIGN_EASE_ARRAY }}
               className={cn(
                 'glass-panel flex flex-col rounded-panel p-8',
                 plan.recommended && 'panel-lift border-accentRed/40'
