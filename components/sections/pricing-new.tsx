@@ -37,7 +37,7 @@ export function PricingNew() {
     <section className="py-24 bg-midnight">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 06 — PRICING
+          § 08 — PRICING
         </p>
 
         {/* Toggle */}

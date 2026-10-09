@@ -102,19 +102,11 @@ export function HowItWorksNew() {
           {/* Left: Timeline */}
           <div className="relative">
             {/* Timeline line */}
-            <svg className="absolute left-4 top-0 bottom-0 w-px h-full" style={{ overflow: 'visible' }}>
-              <motion.line
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="100%"
-                stroke="#26344D"
-                strokeWidth="1"
-                strokeDasharray="1 1000"
-                initial={{ strokeDashoffset: 1000 }}
-                style={{ strokeDashoffset: useTransform(pathLength, (v) => 1000 - v * 1000) }}
-              />
-            </svg>
+            <div className="absolute bottom-0 left-4 top-0 w-px bg-hairline" />
+            <motion.div
+              className="absolute bottom-0 left-4 top-0 w-px origin-top bg-accentRed"
+              style={{ scaleY: pathLength }}
+            />
 
             {/* Steps */}
             <div className="space-y-16 pl-8">

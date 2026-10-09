@@ -9,7 +9,6 @@ import { HowItWorksNew } from '@/components/sections/how-it-works-new';
 import { PricingNew } from '@/components/sections/pricing-new';
 import { FAQ } from '@/components/sections/faq';
 import { ClosingBand } from '@/components/sections/closing-band';
-import { FadeInOnScroll } from '@/components/motion/fade-in-on-scroll';
 
 export default function Home() {
   return (
@@ -24,9 +23,7 @@ export default function Home() {
       <HowItWorksNew />
       <PricingNew />
       <FAQ />
-      <FadeInOnScroll>
-        <ClosingBand />
-      </FadeInOnScroll>
+      <ClosingBand />
     </>
   );
 }

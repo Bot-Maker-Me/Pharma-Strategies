@@ -45,6 +45,8 @@ Reuse first — only add a component when nothing below fits.
 - `ShinyText` (React Bits) — components/react-bits/shiny-text.tsx
 - `StarBorder` (React Bits) — components/react-bits/star-border.tsx
 - `Squares` (React Bits) — components/react-bits/squares.tsx
+- `ClickSpark` (React Bits) — components/react-bits/click-spark.tsx
+- `CursorGlow` — components/effects/cursor-glow.tsx
 
 ## shadcn/ui primitives (do NOT hand-edit)
 components/ui/* — button, card, dialog, sheet, table, tabs, form, input, select, badge,

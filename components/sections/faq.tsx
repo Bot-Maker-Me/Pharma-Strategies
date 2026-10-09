@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { StaggerReveal } from '@/components/motion/stagger-reveal';
 
 const faqs = [
   {
@@ -38,10 +39,10 @@ export function FAQ() {
     <section className="py-24 bg-midnight">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 08 — FAQ
+          § 09 — FAQ
         </p>
 
-        <div className="max-w-3xl space-y-4">
+        <StaggerReveal className="max-w-3xl space-y-4" stagger={0.08}>
           {faqs.map((faq, index) => (
             <div key={index} className="border border-hairline rounded-panel overflow-hidden">
               <button
@@ -74,7 +75,7 @@ export function FAQ() {
               </AnimatePresence>
             </div>
           ))}
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );

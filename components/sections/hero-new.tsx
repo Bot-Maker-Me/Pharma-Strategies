@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -16,8 +16,6 @@ const ledgerRows = [
 export function HeroNew() {
   const [visibleRows, setVisibleRows] = useState(0);
   const [showStamp, setShowStamp] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,21 +37,6 @@ export function HeroNew() {
       return () => clearTimeout(timeout);
     }
   }, [visibleRows]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,22 +60,7 @@ export function HeroNew() {
   };
 
   return (
-    <section ref={heroRef} className="relative bg-midnight min-h-screen overflow-hidden grid-background pt-16">
-      {/* Cursor glow */}
-      <motion.div
-        className="pointer-events-none fixed w-[400px] h-[400px] rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(184, 50, 60, 0.3) 0%, transparent 70%)',
-          left: mousePosition.x - 200,
-          top: mousePosition.y - 200,
-        }}
-        animate={{
-          x: mousePosition.x - 200,
-          y: mousePosition.y - 200,
-        }}
-        transition={{ type: 'spring', stiffness: 100, damping: 30 }}
-      />
-
+    <section className="relative bg-midnight min-h-screen overflow-hidden grid-background pt-16">
       {/* Blue glow behind composition */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-full glow-blue opacity-30" />
 

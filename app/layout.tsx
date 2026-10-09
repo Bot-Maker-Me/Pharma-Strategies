@@ -4,6 +4,8 @@ import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { SmoothScrollProvider } from '@/components/providers/smooth-scroll-provider';
+import { CursorGlow } from '@/components/effects/cursor-glow';
+import { ClickSpark } from '@/components/react-bits';
 import { siteConfig } from '@/config/site';
 
 const fraunces = Fraunces({
@@ -66,6 +68,8 @@ export default function RootLayout({
     <html lang="en" className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
       <body className="font-sans antialiased">
         <SmoothScrollProvider>
+          <CursorGlow />
+          <ClickSpark />
           <div className="paper-grain" />
           <div className="relative flex min-h-screen flex-col">
             <Navbar />

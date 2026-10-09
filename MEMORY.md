@@ -39,6 +39,7 @@
 ## Session log
 - 2026-10-09: Setup complete — governance files created, shadcn registries (Magic UI + Aceternity) configured, reusable Magic UI / Aceternity-style components and base shells added, app hoisted to the repo root.
 - 2026-10-09: Motion stack added — refactored the Lenis provider (dropped redundant `scrollerProxy`, added reactive reduced-motion handling and anchor offset), added `lib/gsap.ts`, three GSAP motion helpers, four React Bits components, and demos on the home page and `/dashboard`.
+- 2026-10-09: Layout + performance pass — fixed the stacked/overlapping captions in `narcotics-ledger-pinned`, rebuilt `apps-horizontal` as a measured sticky horizontal scroller, removed per-`mousemove` React state from the hero and bento grid (now rAF/CSS-variable driven), corrected section numbering (§05–§09), and added global cursor effects (`CursorGlow`, `ClickSpark`).
 
 ## Motion caveats
 - Smooth scroll fully disables itself when `prefers-reduced-motion: reduce` is set.

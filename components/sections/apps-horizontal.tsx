@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -53,14 +53,12 @@ const apps = [
             <span className="text-[10px] font-mono text-primaryText">08:00 - Oxycodone 5mg</span>
             <span className="text-[10px] font-mono text-accentRed">✓</span>
           </div>
-          <div className="flex justify-between items-center bg-hairline/10 p-2 rounded">
-            <span className="text-[10px] font-mono text-primaryText">12:00 - Oxycodone 5mg</span>
-            <span className="text-[10px] font-mono text-secondaryText">—</span>
-          </div>
-          <div className="flex justify-between items-center bg-hairline/10 p-2 rounded">
-            <span className="text-[10px] font-mono text-primaryText">18:00 - Oxycodone 5mg</span>
-            <span className="text-[10px] font-mono text-secondaryText">—</span>
-          </div>
+          {['12:00', '18:00'].map((time) => (
+            <div key={time} className="flex justify-between items-center bg-hairline/10 p-2 rounded">
+              <span className="text-[10px] font-mono text-primaryText">{time} - Oxycodone 5mg</span>
+              <span className="text-[10px] font-mono text-secondaryText">—</span>
+            </div>
+          ))}
         </div>
       </div>
     ),
@@ -75,27 +73,19 @@ const apps = [
       <div className="space-y-2 p-4">
         <div className="text-[10px] font-mono text-secondaryText mb-2">Recent Orders</div>
         <div className="space-y-1">
-          <div className="flex justify-between items-center bg-hairline/10 p-2 rounded">
-            <div>
-              <div className="text-[10px] font-mono text-primaryText">ORD-2847</div>
-              <div className="text-[10px] font-mono text-secondaryText">McKesson</div>
+          {[
+            ['ORD-2847', 'McKesson', 'Pending', 'text-secondaryText'],
+            ['ORD-2846', 'Cardinal', 'Shipped', 'text-primaryText'],
+            ['INV-1842', 'Amerisource', 'Paid', 'text-primaryText'],
+          ].map(([id, supplier, status, statusClass]) => (
+            <div key={id} className="flex justify-between items-center bg-hairline/10 p-2 rounded">
+              <div>
+                <div className="text-[10px] font-mono text-primaryText">{id}</div>
+                <div className="text-[10px] font-mono text-secondaryText">{supplier}</div>
+              </div>
+              <span className={`text-[10px] font-mono ${statusClass}`}>{status}</span>
             </div>
-            <span className="text-[10px] font-mono text-secondaryText">Pending</span>
-          </div>
-          <div className="flex justify-between items-center bg-hairline/10 p-2 rounded">
-            <div>
-              <div className="text-[10px] font-mono text-primaryText">ORD-2846</div>
-              <div className="text-[10px] font-mono text-secondaryText">Cardinal</div>
-            </div>
-            <span className="text-[10px] font-mono text-primaryText">Shipped</span>
-          </div>
-          <div className="flex justify-between items-center bg-hairline/10 p-2 rounded">
-            <div>
-              <div className="text-[10px] font-mono text-primaryText">INV-1842</div>
-              <div className="text-[10px] font-mono text-secondaryText">Amerisource</div>
-            </div>
-            <span className="text-[10px] font-mono text-primaryText">Paid</span>
-          </div>
+          ))}
         </div>
       </div>
     ),
@@ -104,69 +94,83 @@ const apps = [
 
 export function AppsHorizontal() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [distance, setDistance] = useState(0);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
 
-  const x = useTransform(scrollYProgress, [0, 1], [0, -2000]);
+  useEffect(() => {
+    const measure = () => {
+      const track = trackRef.current;
+      if (!track) return;
+      setDistance(Math.max(0, track.scrollWidth - window.innerWidth + 48));
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
 
   return (
-    <section ref={containerRef} className="py-32 bg-midnight overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 05 — APPS
-        </p>
+    <section ref={containerRef} className="relative h-[280vh] bg-midnight">
+      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-8">
+            § 06 — APPS
+          </p>
+        </div>
 
         <motion.div
+          ref={trackRef}
           style={{ x }}
-          className="flex gap-8"
+          className="flex gap-8 pl-4 pr-4 will-change-transform sm:pl-6 lg:pl-8"
         >
-          {apps.map((app, index) => (
-            <motion.div
+          {apps.map((app) => (
+            <div
               key={app.slug}
-              className={`flex-shrink-0 ${app.featured ? 'w-[70vw]' : 'w-[70vw]'} md:w-[50vw]`}
+              className="w-[80vw] max-w-[620px] flex-shrink-0 md:w-[46vw]"
             >
               <Link href={`/apps/${app.slug}`} className="block group">
-                {/* Photo slot with overlay */}
                 <div className="relative aspect-video bg-raisedDark mb-6 overflow-hidden rounded-panel border border-hairline">
                   <div className="absolute inset-0 bg-midnight/40 mix-blend-multiply" />
-                  {/* UI preview */}
-                  <div className="absolute inset-4 bg-hairline/10 border border-hairline/30 p-4 group-hover:scale-105 transition-transform duration-700">
+                  <div className="absolute inset-4 bg-hairline/10 border border-hairline/30 p-4 transition-transform duration-700 group-hover:scale-[1.04]">
                     {app.ui}
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className="mb-4">
                   <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-2">
                     {app.index}
                   </p>
-                  <h3 className={`font-heading text-primaryText mb-2 ${app.featured ? 'text-4xl' : 'text-2xl'}`}>
+                  <h3
+                    className={`font-heading text-primaryText mb-2 ${
+                      app.featured ? 'text-4xl' : 'text-2xl'
+                    }`}
+                  >
                     {app.name}
                   </h3>
-                  <p className="font-sans text-secondaryText mb-4">
-                    {app.description}
-                  </p>
+                  <p className="font-sans text-secondaryText mb-4">{app.description}</p>
                 </div>
 
                 <div className="flex items-center text-accentRed">
-                  <span className="font-mono text-xs uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                  <span className="font-mono text-xs uppercase tracking-widest transition-transform group-hover:translate-x-1">
                     View app
                   </span>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
 
-        {/* Progress bar */}
-        <div className="mt-8 h-1 bg-hairline rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-accentRed"
-            style={{ scaleX: scrollYProgress }}
-          />
+        <div className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="h-1 overflow-hidden rounded-full bg-hairline">
+            <motion.div className="h-full origin-left bg-accentRed" style={{ scaleX: scrollYProgress }} />
+          </div>
         </div>
       </div>
     </section>

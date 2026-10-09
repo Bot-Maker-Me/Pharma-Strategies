@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { SplitText } from '@/components/react-bits';
 
 export function ClosingBand() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,9 @@ export function ClosingBand() {
     console.log(formData);
   };
 
+  const inputClass =
+    'w-full bg-transparent border-b border-hairline py-3 font-sans text-primaryText placeholder-secondaryText/40 focus:outline-none focus:border-accentRed transition-colors';
+
   return (
     <section className="py-24 bg-midnight relative overflow-hidden">
       {/* Glows */}
@@ -29,7 +33,7 @@ export function ClosingBand() {
           {/* Left: Statement and CTA */}
           <div>
             <h2 className="font-heading text-[clamp(2rem,6vw,5rem)] font-light leading-tight text-primaryText mb-8">
-              Make every count count.
+              <SplitText text="Make every count count." delay={32} />
             </h2>
             <Link
               href="/contact"
@@ -46,7 +50,7 @@ export function ClosingBand() {
               placeholder="Your name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-transparent border-b border-hairline py-3 font-sans text-primaryText placeholder-secondaryText/40 focus:outline-none focus:border-accentRed transition-colors"
+              className={inputClass}
               required
             />
             <input
@@ -54,7 +58,7 @@ export function ClosingBand() {
               placeholder="Your email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-transparent border-b border-hairline py-3 font-sans text-primaryText placeholder-secondaryText/40 focus:outline-none focus:border-accentRed transition-colors"
+              className={inputClass}
               required
             />
             <input
@@ -62,7 +66,7 @@ export function ClosingBand() {
               placeholder="Company name"
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-              className="w-full bg-transparent border-b border-hairline py-3 font-sans text-primaryText placeholder-secondaryText/40 focus:outline-none focus:border-accentRed transition-colors"
+              className={inputClass}
               required
             />
             <textarea
@@ -70,7 +74,7 @@ export function ClosingBand() {
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               rows={3}
-              className="w-full bg-transparent border-b border-hairline py-3 font-sans text-primaryText placeholder-secondaryText/40 focus:outline-none focus:border-accentRed transition-colors resize-none"
+              className={`${inputClass} resize-none`}
               required
             />
             <button

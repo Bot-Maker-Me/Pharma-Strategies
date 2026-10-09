@@ -77,6 +77,7 @@ Before coding:
 - Aceternity-style: `components/aceternity/`
 - React Bits: `components/react-bits/`
 - GSAP motion helpers: `components/motion/`
+- Cursor / ambient effects: `components/effects/`
 - Providers: `components/providers/`
 - Marketing / section blocks: `components/sections/`
 - Shared building blocks: `components/shared/`
