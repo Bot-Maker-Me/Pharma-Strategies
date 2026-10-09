@@ -93,8 +93,8 @@ export function HowItWorksNew() {
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section ref={containerRef} className="py-24 bg-raisedDark">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section ref={containerRef} className="bg-raisedDark py-28 lg:py-36">
+      <div className="ed-container">
         <SectionHeading
           label="§ 07 — HOW IT WORKS"
           title="From account to first count"

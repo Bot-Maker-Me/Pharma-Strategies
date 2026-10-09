@@ -61,7 +61,9 @@ export function MarqueeStrip() {
       aria-label="Where Pharma Strategies is used, and what it records"
     >
       <Row items={facilities} tone="muted" />
-      <div aria-hidden className="mx-auto my-4 h-px w-full max-w-7xl bg-hairline/60" />
+      <div aria-hidden className="ed-container">
+        <div className="my-4 h-px w-full bg-hairline/60" />
+      </div>
       <Row items={capabilities} tone="accent" reverse />
     </section>
   );

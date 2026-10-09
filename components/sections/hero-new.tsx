@@ -211,15 +211,15 @@ export function HeroNew() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-midnight pt-16"
+      className="relative min-h-screen overflow-hidden bg-midnight pt-[72px]"
     >
-      {/* Background: Silk (lazy) over a static midnight→blue glow, faded into --bg */}
+      {/* Background: Silk (lazy) over static ambient light, faded into --bg */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(60% 60% at 68% 36%, rgba(29,53,87,0.85) 0%, rgba(11,18,32,1) 72%)',
+              'radial-gradient(52% 52% at 70% 34%, rgba(29,53,87,0.8) 0%, rgba(11,18,32,0.5) 55%, rgba(11,18,32,1) 78%), radial-gradient(38% 38% at 14% 16%, rgba(194,59,59,0.09) 0%, rgba(11,18,32,0) 70%)',
           }}
         />
         {showSilk && (
@@ -230,7 +230,7 @@ export function HeroNew() {
               scale={1.1}
               color="#0B1220"
               flowColor="#1D3557"
-              accentColor="#B8323C"
+              accentColor="#C23B3B"
             />
           </Suspense>
         )}
@@ -238,11 +238,12 @@ export function HeroNew() {
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent to-[#0B1220]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-        <div className="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-12">
+      <div className="ed-container relative z-10 flex min-h-[calc(100vh-72px)] items-center">
+        <div className="grid w-full grid-cols-1 items-center gap-12 py-16 lg:grid-cols-12">
           {/* Left: text */}
           <div className="lg:col-span-7">
-            <p className="mb-4 font-mono text-xs uppercase tracking-widest text-secondaryText">
+            <p className="mb-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-secondaryText">
+              <span className="h-px w-8 bg-accentRed" />
               § 01 — THE REGISTER
             </p>
             <h1
@@ -266,7 +267,7 @@ export function HeroNew() {
               <Magnet padding={80} magnetStrength={0.3}>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-button bg-accentRed px-6 py-3 font-mono text-xs uppercase tracking-widest text-midnight transition-colors hover:bg-accentRed/90 active:translate-y-1"
+                  className="inline-flex items-center justify-center rounded-button bg-accentRed px-6 py-3.5 font-mono text-xs uppercase tracking-widest text-midnight shadow-[0_24px_60px_-28px_rgba(194,59,59,0.85)] transition-colors hover:bg-accentRedBright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accentRed active:translate-y-1"
                 >
                   Book a demo
                 </Link>
@@ -314,10 +315,11 @@ export function HeroNew() {
                 {/* Ledger sheet */}
                 <div
                   ref={sheetRef}
-                  className="absolute right-0 top-12 w-[560px] border border-hairline bg-creamSheet p-6 shadow-lg"
+                  className="paper-sheet absolute right-0 top-12 w-[560px] rounded-[10px] p-6"
                 >
                   <div
-                    className="absolute bottom-0 left-2 right-0 top-2 border border-hairline bg-creamSheet/80"
+                    aria-hidden
+                    className="absolute bottom-0 left-2 right-0 top-2 rounded-[10px] border border-midnight/10 bg-creamSheet/70"
                     style={{ transform: 'rotate(2deg)' }}
                   />
 
@@ -342,14 +344,14 @@ export function HeroNew() {
                   </div>
 
                   {/* Rows */}
-                  <div className="relative z-10 space-y-2">
+                  <div className="relative z-10 divide-y divide-midnight/[0.07]">
                     {ledgerRows.slice(0, visibleRows).map((row, index) => (
                       <motion.div
                         key={index}
                         initial={reduced ? false : { opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.15, ease: DESIGN_EASE_ARRAY }}
-                        className="flex font-mono text-xs tabular-nums text-midnight"
+                        className="flex py-1.5 font-mono text-xs tabular-nums text-midnight"
                       >
                         <div className="w-[100px] whitespace-nowrap">{row.date}</div>
                         <div className="flex-1 pr-4 font-sans">{row.drug}</div>

@@ -152,7 +152,7 @@ function BentoCard({ feature, index }: { feature: Feature; index: number }) {
         el.style.setProperty('--my', `${event.clientY - rect.top}px`);
       }}
       className={cn(
-        'group glass-panel rounded-panel p-6 relative overflow-hidden transition-transform duration-500 hover:-translate-y-1 will-change-transform',
+        'group glass-panel relative overflow-hidden rounded-panel p-6 transition-[transform,border-color] duration-500 will-change-transform hover:-translate-y-1 hover:border-accentRed/30',
         sizeClass[feature.size]
       )}
     >
@@ -179,8 +179,8 @@ function BentoCard({ feature, index }: { feature: Feature; index: number }) {
 
 export function FeatureBentoGrid() {
   return (
-    <section className="py-24 bg-midnight">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-midnight py-28 lg:py-36">
+      <div className="ed-container">
         <SectionHeading
           label="§ 03 — FEATURES"
           title="The register, in six parts"

@@ -31,6 +31,8 @@ Reuse first — only add a component when nothing below fits.
 - `BlurFade` (Magic UI) — components/magicui/blur-fade.tsx
 - `Reveal` — components/shared/reveal.tsx
 - `SectionLabel` — components/shared/section-label.tsx
+- `SectionHeading` — components/shared/section-heading.tsx — hairline draw + mono eyebrow + masked line-reveal title + optional description
+- `ScrollWords` — components/shared/scroll-words.tsx — scrubbed word-by-word text reveal with accent words
 
 ## Pharma Strategies sections (home page)
 - `Hero` (HeroNew) — components/sections/hero-new.tsx
@@ -38,7 +40,7 @@ Reuse first — only add a component when nothing below fits.
 - `FeatureBentoGrid` — components/sections/feature-bento-grid.tsx
 - `Role tabs` (WhoItsFor) — components/sections/who-its-for.tsx
 - `NarcoticsLedgerPinned` — components/sections/narcotics-ledger-pinned.tsx
-- `Apps strip` (AppsHorizontal) — components/sections/apps-horizontal.tsx
+- `Apps showcase` (AppsShowcase) — components/sections/apps-showcase.tsx — three floating app windows sharing one balance line
 - `HowItWorksNew` — components/sections/how-it-works-new.tsx
 - `PricingNew` — components/sections/pricing-new.tsx
 - `FAQ` — components/sections/faq.tsx

@@ -5,56 +5,64 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { siteConfig } from '@/config/site';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { cn } from '@/lib/utils';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const ctaClass =
+    'rounded-button bg-accentRed px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-midnight transition-colors hover:bg-accentRedBright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accentRed';
+
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled ? 'glass-panel' : 'bg-transparent'
-      }`}
+      className={cn(
+        'sticky top-0 z-50 w-full transition-all duration-300',
+        scrolled
+          ? 'border-b border-hairline bg-midnight/85 backdrop-blur-xl'
+          : 'border-b border-transparent bg-transparent'
+      )}
     >
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="font-heading text-2xl font-light tracking-tight text-primaryText !font-family var(--font-fraunces), serif">
+      <nav className="ed-container flex h-[72px] items-center justify-between">
+        <Link
+          href="/"
+          className="font-heading text-[1.4rem] font-normal leading-none tracking-[-0.01em] text-primaryText"
+        >
           Pharma Strategies
         </Link>
 
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-8 md:flex">
           {siteConfig.nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="font-mono text-xs uppercase tracking-widest text-secondaryText transition-colors hover:text-accentRed"
+              className="font-mono text-[11px] uppercase tracking-widest text-secondaryText transition-colors hover:text-primaryText"
             >
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/contact"
-            className="font-mono text-xs uppercase tracking-widest border-2 border-accentRed px-4 py-2 rounded-button text-accentRed transition-colors hover:bg-accentRed hover:text-midnight"
-          >
+          <Link href="/contact" className={ctaClass}>
             Book a demo
           </Link>
         </div>
 
         <button
-          className="md:hidden p-2 text-primaryText"
+          className="p-2 text-primaryText md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </nav>
-
-      {scrolled && <div className="hairline-rule" />}
 
       <AnimatePresence>
         {mobileOpen && (
@@ -62,16 +70,16 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden md:hidden border-t border-hairline bg-midnight"
+            transition={{ duration: 0.3, ease: DESIGN_EASE_ARRAY }}
+            className="overflow-hidden border-t border-hairline bg-midnight/95 backdrop-blur-xl md:hidden"
           >
-            <div className="flex flex-col gap-4 px-4 py-6">
+            <div className="ed-container flex flex-col gap-5 py-6">
               {siteConfig.nav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="font-mono text-xs uppercase tracking-widest text-secondaryText transition-colors hover:text-accentRed"
+                  className="font-mono text-[11px] uppercase tracking-widest text-secondaryText transition-colors hover:text-primaryText"
                 >
                   {item.label}
                 </Link>
@@ -79,7 +87,7 @@ export function Navbar() {
               <Link
                 href="/contact"
                 onClick={() => setMobileOpen(false)}
-                className="font-mono text-xs uppercase tracking-widest border-2 border-accentRed px-4 py-2 rounded-button text-accentRed transition-colors hover:bg-accentRed hover:text-midnight"
+                className={cn(ctaClass, 'self-start')}
               >
                 Book a demo
               </Link>

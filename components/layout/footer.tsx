@@ -1,83 +1,87 @@
 import Link from 'next/link';
 import { siteConfig } from '@/config/site';
 
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'The register', href: '/platform' },
+      { label: 'Apps', href: '/apps' },
+      { label: 'Pricing', href: '/pricing' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Resources', href: '/resources' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Legal & privacy', href: '/legal' },
+      { label: 'Admin sign in', href: '/admin/login' },
+    ],
+  },
+];
+
 export function Footer() {
   return (
-    <footer className="bg-midnight py-16 border-t border-hairline">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Brand column */}
-          <div className="md:col-span-1">
-            <Link href="/" className="font-heading text-2xl font-light tracking-tight text-primaryText !font-family var(--font-fraunces), serif">
+    <footer className="relative border-t border-hairline bg-midnight">
+      <div
+        aria-hidden
+        className="glow-blue pointer-events-none absolute -top-24 left-1/2 h-48 w-[36rem] -translate-x-1/2 opacity-20"
+      />
+
+      <div className="ed-container relative py-20">
+        <div className="grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <Link
+              href="/"
+              className="font-heading text-2xl font-normal leading-none tracking-[-0.01em] text-primaryText"
+            >
               Pharma Strategies
             </Link>
-            <p className="mt-4 max-w-sm font-sans text-sm text-secondaryText">
-              A focused compliance marketplace for pharmaceutical and care operations teams.
+            <p className="mt-5 max-w-xs font-sans text-sm text-secondaryText">
+              A controlled-substance register with dual signatures, discrepancy alerts and an audit
+              trail you can hand over.
+            </p>
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-secondaryText/70">
+              Built for pharmacies, nursing homes and care facilities
             </p>
           </div>
 
-          {/* Product */}
-          <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-              Product
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/apps" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  Apps
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  Pricing
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-              Company
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/about" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-              Legal
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/legal" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  Legal &amp; privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/login" className="font-sans text-sm text-secondaryText transition-colors hover:text-accentRed">
-                  Admin
-                </Link>
-              </li>
-            </ul>
+          <div className="grid gap-10 sm:grid-cols-3 md:col-span-8">
+            {columns.map((column) => (
+              <div key={column.title}>
+                <h3 className="mb-5 font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                  {column.title}
+                </h3>
+                <ul className="space-y-3">
+                  {column.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="font-sans text-sm text-secondaryText transition-colors hover:text-primaryText"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Bottom row */}
-        <div className="mt-12 pt-8 border-t border-hairline flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-mono text-xs text-secondaryText/60">
+        <div className="mt-16 flex flex-col gap-4 border-t border-hairline pt-8 md:flex-row md:items-center md:justify-between">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-secondaryText/60">
             &copy; 2026 {siteConfig.name}. All rights reserved.
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-secondaryText/60">
+            Every entry signed · every count reconciled
           </p>
         </div>
       </div>

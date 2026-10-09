@@ -67,17 +67,34 @@
     @apply bg-midnight text-primaryText;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   html {
     scroll-behavior: smooth;
   }
+  ::selection {
+    background: rgba(194, 59, 59, 0.35);
+    color: #f5f0e8;
+  }
 }
 
 @layer components {
+  /**
+   * Layout canvas — 1360px max with clamp(20px, 5vw, 80px) gutters.
+   * Every band on the site uses this so the left edge never drifts.
+   */
+  .ed-container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1360px;
+    padding-inline: clamp(20px, 5vw, 80px);
+  }
+
   .hairline-rule {
     @apply border-t border-hairline;
   }
 
+  /* Soft film grain over the whole page, sits above content but ignores input. */
   .paper-grain {
     position: fixed;
     top: 0;
@@ -86,35 +103,71 @@
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.03;
+    opacity: 0.022;
+    mix-blend-mode: soft-light;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 
+  /**
+   * Raised surface: hairline border, 1px inner highlight, a very light navy
+   * inner glow and a soft far shadow. Never a flat fill.
+   */
   .glass-panel {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: rgba(19, 30, 51, 0.6);
-    border: 1px solid rgba(38, 52, 77, 0.5);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(245, 240, 232, 0.05) 0%,
+        rgba(245, 240, 232, 0.012) 42%,
+        rgba(11, 18, 32, 0.18) 100%
+      ),
+      rgba(17, 24, 39, 0.72);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid rgba(36, 49, 75, 0.9);
+    box-shadow:
+      inset 0 1px 0 rgba(245, 240, 232, 0.07),
+      inset 0 0 60px rgba(29, 53, 87, 0.16),
+      0 20px 44px -28px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Product screenshots / app mocks: deeper, more physical lift. */
+  .panel-lift {
+    box-shadow:
+      inset 0 1px 0 rgba(245, 240, 232, 0.09),
+      inset 0 0 90px rgba(29, 53, 87, 0.2),
+      0 56px 96px -48px rgba(0, 0, 0, 1);
+  }
+
+  /* Cream paper surfaces (ledger sheet, stamps). */
+  .paper-sheet {
+    background: linear-gradient(180deg, #f8f5f0 0%, #f5f0e8 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 40px 80px -40px rgba(0, 0, 0, 0.95);
   }
 
   .grid-background {
-    background-image: linear-gradient(rgba(38, 52, 77, 0.4) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(38, 52, 77, 0.4) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-image: linear-gradient(rgba(36, 49, 75, 0.45) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36, 49, 75, 0.45) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
 
   .glow-blue {
-    box-shadow: 0 0 100px 50px rgba(29, 53, 87, 0.3);
+    box-shadow: 0 0 120px 60px rgba(29, 53, 87, 0.32);
   }
 
   .glow-red {
-    box-shadow: 0 0 100px 50px rgba(184, 50, 60, 0.2);
+    box-shadow: 0 0 100px 50px rgba(194, 59, 59, 0.18);
   }
 
-  /* Force Fraunces on headings */
-  h1, h2, h3, .font-heading {
-    font-family: var(--font-fraunces), serif !important;
+  /* Display type: one serif, used for every large headline. */
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: var(--font-display), Georgia, 'Times New Roman', serif !important;
+    letter-spacing: -0.015em;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -187,20 +240,20 @@ html.lenis body {
 
 .split-accent__outline {
   color: transparent;
-  -webkit-text-stroke: 1.5px #b8323c;
+  -webkit-text-stroke: 1.25px #c23b3b;
 }
 
 .split-accent__fill {
   position: absolute;
   inset: 0;
-  color: #b8323c;
+  color: #c23b3b;
   -webkit-text-stroke: 0;
   clip-path: inset(0 100% 0 0);
 }
 
 /* Reduced motion: show the final filled state, no wipe */
 .split-lines--filled .split-accent__outline {
-  color: #b8323c;
+  color: #c23b3b;
   -webkit-text-stroke: 0;
 }
 
@@ -210,6 +263,23 @@ html.lenis body {
 
 /* Hero ledger sheen (transform + opacity only) */
 .ledger-sheen {
-  background: radial-gradient(circle, rgba(237, 230, 218, 0.14) 0%, rgba(237, 230, 218, 0) 70%);
+  background: radial-gradient(circle, rgba(248, 245, 240, 0.16) 0%, rgba(248, 245, 240, 0) 70%);
 }
 
+/* Discreet navy scrollbar so the frame stays part of the design */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b1220;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #24314b;
+    border: 3px solid #0b1220;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #33456a;
+  }
+}

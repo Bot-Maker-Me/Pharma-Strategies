@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { StaggerReveal } from '@/components/motion/stagger-reveal';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { cn } from '@/lib/utils';
 
 const faqs = [
   {
@@ -34,50 +36,76 @@ const faqs = [
 ];
 
 export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 bg-midnight">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-midnight py-28 lg:py-36">
+      <div className="ed-container">
         <SectionHeading
           label="§ 09 — FAQ"
           title="Questions we get asked"
           description="Anything not covered here, ask us in the demo."
         />
 
-        <StaggerReveal className="max-w-3xl space-y-4" stagger={0.08}>
-          {faqs.map((faq, index) => (
-            <div key={index} className="border border-hairline rounded-panel overflow-hidden">
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-6 text-left bg-transparent hover:bg-hairline/10 transition-colors"
-              >
-                <span className="font-sans text-primaryText">{faq.question}</span>
-                <motion.div
-                  animate={{ rotate: openIndex === index ? 180 : 0 }}
-                  transition={{ duration: 0.35 }}
-                >
-                  <ChevronDown className="h-4 w-4 text-secondaryText" />
-                </motion.div>
-              </button>
-
-              <AnimatePresence>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.35 }}
-                    className="overflow-hidden"
+        <StaggerReveal className="max-w-3xl" stagger={0.07}>
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div key={faq.question} className="border-t border-hairline last:border-b">
+                <h3>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    aria-expanded={isOpen}
+                    className="group flex w-full items-center gap-6 py-6 text-left"
                   >
-                    <div className="p-6 pt-0">
-                      <p className="font-sans text-secondaryText">{faq.answer}</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+                    <span
+                      className={cn(
+                        'font-mono text-[10px] uppercase tracking-widest transition-colors',
+                        isOpen ? 'text-accentRed' : 'text-secondaryText/70'
+                      )}
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span
+                      className={cn(
+                        'flex-1 font-sans text-lg transition-colors',
+                        isOpen ? 'text-primaryText' : 'text-primaryText/80 group-hover:text-primaryText'
+                      )}
+                    >
+                      {faq.question}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 45 : 0 }}
+                      transition={{ duration: 0.35, ease: DESIGN_EASE_ARRAY }}
+                      className={cn(
+                        'flex h-7 w-7 flex-none items-center justify-center rounded-full border transition-colors',
+                        isOpen ? 'border-accentRed/50 text-accentRed' : 'border-hairline text-secondaryText'
+                      )}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </motion.span>
+                  </button>
+                </h3>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: DESIGN_EASE_ARRAY }}
+                      className="overflow-hidden"
+                    >
+                      <p className="max-w-2xl pb-7 pl-10 font-sans text-secondaryText">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </StaggerReveal>
       </div>
     </section>

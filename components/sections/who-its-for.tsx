@@ -11,9 +11,19 @@ interface Role {
   id: string;
   name: string;
   benefits: string[];
-  access: string[];
+  /** One flag per entry in PERMISSIONS, in the same order. */
+  allowed: boolean[];
   ui: ReactNode;
 }
+
+/** The five actions the register distinguishes between, in checklist order. */
+const PERMISSIONS = [
+  'Receive deliveries',
+  'Run counts',
+  'Administer doses',
+  'Export audit reports',
+  'Manage staff and roles',
+];
 
 const roles: Role[] = [
   {
@@ -24,7 +34,7 @@ const roles: Role[] = [
       'Comply with DEA regulations effortlessly',
       'Reduce paperwork and save hours daily',
     ],
-    access: ['Register write', 'Reconciliation', 'Deliveries'],
+    allowed: [true, true, true, true, false],
     ui: (
       <div className="w-full space-y-2">
         <div className="bg-hairline/10 p-2 rounded-button">
@@ -60,7 +70,7 @@ const roles: Role[] = [
       'Medication administration records built-in',
       'Alerts for discrepancies and missing doses',
     ],
-    access: ['Administration', 'Bedside check', 'Alerts'],
+    allowed: [false, true, true, false, false],
     ui: (
       <div className="w-full">
         <div className="bg-hairline/10 p-4 rounded-button border-2 border-hairline/30 max-w-[200px] mx-auto">
@@ -93,7 +103,7 @@ const roles: Role[] = [
       'Export audit reports for compliance',
       'Real-time visibility into all operations',
     ],
-    access: ['Staff and roles', 'Audit export', 'All facilities'],
+    allowed: [false, false, false, true, true],
     ui: (
       <div className="w-full space-y-2">
         <div className="bg-hairline/10 p-2 rounded-button">
@@ -165,13 +175,13 @@ export function WhoItsFor() {
   const activeRole = roles[activeTab];
 
   return (
-    <section className="relative overflow-hidden bg-raisedDark py-24">
+    <section className="relative overflow-hidden bg-raisedDark py-28 lg:py-36">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-hairline to-transparent"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="ed-container relative">
         <SectionHeading
           label="§ 04 — WHO IT'S FOR"
           title="One register, three points of view"
@@ -271,19 +281,39 @@ export function WhoItsFor() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-2 border-t border-hairline pt-6"
+                  className="mt-8 border-t border-hairline pt-6"
                 >
-                  <span className="mr-2 font-mono text-[10px] uppercase tracking-widest text-secondaryText">
-                    Granted
-                  </span>
-                  {activeRole.access.map((tag) => (
-                    <span
-                      key={tag}
-                      className="border border-hairline px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-secondaryText"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                    Permissions
+                  </p>
+                  <dl>
+                    {PERMISSIONS.map((action, index) => {
+                      const granted = activeRole.allowed[index];
+                      return (
+                        <div
+                          key={action}
+                          className="flex items-center justify-between gap-4 border-b border-hairline/60 py-2.5 last:border-b-0"
+                        >
+                          <dt className="font-sans text-sm text-secondaryText">{action}</dt>
+                          <dd
+                            className={cn(
+                              'flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest',
+                              granted ? 'text-primaryText' : 'text-secondaryText/40'
+                            )}
+                          >
+                            {granted ? (
+                              <>
+                                <Check className="h-3 w-3 text-accentRed" strokeWidth={3} />
+                                Granted
+                              </>
+                            ) : (
+                              'Not granted'
+                            )}
+                          </dd>
+                        </div>
+                      );
+                    })}
+                  </dl>
                 </motion.div>
               </motion.div>
             </AnimatePresence>

@@ -4,7 +4,7 @@ import { Statement } from '@/components/sections/statement';
 import { FeatureBentoGrid } from '@/components/sections/feature-bento-grid';
 import { WhoItsFor } from '@/components/sections/who-its-for';
 import { NarcoticsLedgerPinned } from '@/components/sections/narcotics-ledger-pinned';
-import { AppsHorizontal } from '@/components/sections/apps-horizontal';
+import { AppsShowcase } from '@/components/sections/apps-showcase';
 import { HowItWorksNew } from '@/components/sections/how-it-works-new';
 import { PricingNew } from '@/components/sections/pricing-new';
 import { FAQ } from '@/components/sections/faq';
@@ -19,7 +19,7 @@ export default function Home() {
       <FeatureBentoGrid />
       <WhoItsFor />
       <NarcoticsLedgerPinned />
-      <AppsHorizontal />
+      <AppsShowcase />
       <HowItWorksNew />
       <PricingNew />
       <FAQ />

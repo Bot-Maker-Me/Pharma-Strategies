@@ -65,8 +65,8 @@ export function NarcoticsLedgerPinned() {
   });
 
   return (
-    <section ref={containerRef} className="bg-raisedDark py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section ref={containerRef} className="bg-raisedDark py-28 lg:py-36">
+      <div className="ed-container">
         <SectionHeading
           label="§ 05 — NARCOTICS LEDGER"
           title="Receive, count, sign"
@@ -154,7 +154,7 @@ export function NarcoticsLedgerPinned() {
 
           {/* Right: register mock, sticky while the steps advance */}
           <div className="lg:sticky lg:top-24">
-            <div className="rounded-panel border border-hairline bg-midnight p-4">
+            <div className="panel-lift rounded-panel border border-hairline bg-midnight p-4">
               <div className="rounded-panel border border-hairline bg-midnight p-4">
                 <div className="flex gap-4">
                   {/* Nav */}

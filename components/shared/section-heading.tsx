@@ -39,7 +39,8 @@ export function SectionHeading({
 
       <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-7">
-          <p className="mb-4 font-mono text-xs uppercase tracking-widest text-secondaryText">
+          <p className="mb-4 flex items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-secondaryText">
+            <span aria-hidden className="h-px w-8 bg-accentRed" />
             {label}
           </p>
           <h2

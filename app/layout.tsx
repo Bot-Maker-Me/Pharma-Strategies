@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Playfair_Display, Manrope, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
@@ -8,23 +8,26 @@ import { CursorGlow } from '@/components/effects/cursor-glow';
 import { ClickSpark } from '@/components/react-bits';
 import { siteConfig } from '@/config/site';
 
-const fraunces = Fraunces({
+// High-contrast editorial serif for every large headline.
+const displaySerif = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-fraunces',
+  variable: '--font-display',
   display: 'swap',
-  weight: ['300', '400'],
+  weight: ['400', '500', '600', '700'],
 });
 
-const ibmPlexSans = IBM_Plex_Sans({
+// Clean geometric sans for body copy, UI and tables.
+const bodySans = Manrope({
   subsets: ['latin'],
-  variable: '--font-ibm-plex-sans',
+  variable: '--font-body',
   display: 'swap',
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700'],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+// Mono is reserved for small uppercase labels and ledger data.
+const ledgerMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-ibm-plex-mono',
+  variable: '--font-mono',
   display: 'swap',
   weight: ['300', '400', '500', '600'],
 });
@@ -32,22 +35,22 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Pharmaceutical Compliance Marketplace`,
+    default: `${siteConfig.name} — Controlled Substance Compliance`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: [
     'pharmaceutical compliance',
-    'B2B pharma marketplace',
+    'narcotics ledger',
+    'controlled substances',
     'narcotics tracking',
-    'cold chain monitoring',
-    'batch management',
+    'medication administration records',
     'pharmacovigilance',
     'regulatory compliance',
   ],
   authors: [{ name: siteConfig.name }],
   openGraph: {
-    title: `${siteConfig.name} — Pharmaceutical Compliance Marketplace`,
+    title: `${siteConfig.name} — Controlled Substance Compliance`,
     description: siteConfig.description,
     type: 'website',
     url: siteConfig.url,
@@ -65,7 +68,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
+    <html
+      lang="en"
+      className={`${displaySerif.variable} ${bodySans.variable} ${ledgerMono.variable}`}
+    >
       <body className="font-sans antialiased">
         <SmoothScrollProvider>
           <CursorGlow />

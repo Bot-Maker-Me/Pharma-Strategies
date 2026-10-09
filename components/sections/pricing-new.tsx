@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
+import { cn } from '@/lib/utils';
 
 const plans = [
   {
     name: 'Starter',
+    blurb: 'One site finding its feet.',
     monthly: 49,
     yearly: 44,
     recommended: false,
@@ -15,6 +18,7 @@ const plans = [
   },
   {
     name: 'Professional',
+    blurb: 'Multiple sites, full team.',
     monthly: 149,
     yearly: 134,
     recommended: true,
@@ -22,6 +26,7 @@ const plans = [
   },
   {
     name: 'Enterprise',
+    blurb: 'Groups and health systems.',
     monthly: 349,
     yearly: 314,
     recommended: false,
@@ -35,82 +40,119 @@ export function PricingNew() {
   const [isMonthly, setIsMonthly] = useState(true);
 
   return (
-    <section className="py-24 bg-midnight">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-midnight py-28 lg:py-36">
+      <div className="ed-container">
         <SectionHeading
           label="§ 08 — PRICING"
           title="Priced per facility"
           description="Same register on every plan. What changes is how many facilities and staff it covers."
         />
 
-        {/* Toggle */}
-        <div className="flex items-center gap-4 mb-12">
-          <button
-            onClick={() => setIsMonthly(true)}
-            className={`font-mono text-xs uppercase tracking-widest transition-colors ${
-              isMonthly ? 'text-accentRed underline underline-offset-4' : 'text-secondaryText hover:text-primaryText'
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setIsMonthly(false)}
-            className={`font-mono text-xs uppercase tracking-widest transition-colors ${
-              !isMonthly ? 'text-accentRed underline underline-offset-4' : 'text-secondaryText hover:text-primaryText'
-            }`}
-          >
-            Yearly
-          </button>
+        {/* Billing period */}
+        <div className="mb-14 inline-flex rounded-button border border-hairline p-1">
+          {[
+            { label: 'Monthly', value: true },
+            { label: 'Yearly', value: false },
+          ].map((option) => {
+            const active = isMonthly === option.value;
+            return (
+              <button
+                key={option.label}
+                type="button"
+                onClick={() => setIsMonthly(option.value)}
+                aria-pressed={active}
+                className={cn(
+                  'rounded-[2px] px-4 py-2 font-mono text-[11px] uppercase tracking-widest transition-colors',
+                  active ? 'bg-raisedDark text-primaryText' : 'text-secondaryText hover:text-primaryText'
+                )}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+          <span className="px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-secondaryText/70">
+            Save 10%
+          </span>
         </div>
 
-        {/* Pricing columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {plans.map((plan, planIndex) => (
             <motion.div
               key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: planIndex * 0.1 }}
-              className={`glass-panel rounded-panel p-6 relative ${
-                plan.recommended ? 'bg-raisedDark border-t-2 border-t-accentRed' : ''
-              }`}
-            >
-              {plan.recommended && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-widest text-accentRed bg-midnight px-3 py-1">
-                  Recommended
-                </span>
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7, delay: planIndex * 0.1, ease: DESIGN_EASE_ARRAY }}
+              className={cn(
+                'glass-panel flex flex-col rounded-panel p-8',
+                plan.recommended && 'panel-lift border-accentRed/40'
               )}
-              <h3 className="font-heading text-2xl text-primaryText mb-2">{plan.name}</h3>
-              <div className="font-heading text-4xl text-primaryText mb-6">
-                ${isMonthly ? plan.monthly : plan.yearly}
-                <span className="text-sm text-secondaryText">/mo</span>
+            >
+              {plan.recommended ? (
+                <span aria-hidden className="mb-6 block h-px w-full bg-accentRed" />
+              ) : (
+                <span aria-hidden className="mb-6 block h-px w-full bg-hairline" />
+              )}
+
+              <div className="mb-6 flex items-baseline justify-between">
+                <h3 className="font-heading text-2xl text-primaryText">{plan.name}</h3>
+                {plan.recommended ? (
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-accentRed">
+                    Recommended
+                  </span>
+                ) : null}
               </div>
 
-              <div className="space-y-3 mb-8">
-                {featureLabels.map((label, i) => (
-                  <div key={i} className="flex justify-between">
-                    <span className="font-sans text-sm text-primaryText">{label}</span>
-                    <span className={`font-mono text-sm ${plan.recommended ? 'text-primaryText' : 'text-secondaryText'}`}>
-                      {plan.features[i]}
-                    </span>
+              <p className="mb-6 font-sans text-sm text-secondaryText">{plan.blurb}</p>
+
+              <div className="mb-8 flex items-baseline gap-2">
+                <span className="font-heading text-5xl leading-none text-primaryText tabular-nums">
+                  ${isMonthly ? plan.monthly : plan.yearly}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                  / facility / mo
+                </span>
+              </div>
+
+              <dl className="mb-8 flex-1">
+                {featureLabels.map((label, index) => (
+                  <div
+                    key={label}
+                    className="flex items-baseline justify-between gap-4 border-b border-hairline/60 py-3 last:border-b-0"
+                  >
+                    <dt className="font-sans text-sm text-secondaryText">{label}</dt>
+                    <dd
+                      className={cn(
+                        'text-right font-mono text-xs',
+                        plan.features[index] === '—'
+                          ? 'text-secondaryText/40'
+                          : 'text-primaryText'
+                      )}
+                    >
+                      {plan.features[index]}
+                    </dd>
                   </div>
                 ))}
-              </div>
+              </dl>
 
               <Link
                 href="/contact"
-                className={`block text-center font-mono text-xs uppercase tracking-widest px-4 py-3 rounded-button transition-colors ${
+                className={cn(
+                  'block rounded-button px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-widest transition-colors',
                   plan.recommended
-                    ? 'bg-accentRed text-midnight hover:bg-accentRed/90'
-                    : 'border-2 border-hairline text-secondaryText hover:border-accentRed hover:text-accentRed'
-                }`}
+                    ? 'bg-accentRed text-midnight shadow-[0_24px_60px_-28px_rgba(194,59,59,0.85)] hover:bg-accentRedBright'
+                    : 'border border-hairline text-secondaryText hover:border-accentRed hover:text-accentRed'
+                )}
               >
-                {plan.name === 'Enterprise' ? 'Contact sales' : 'Get started'}
+                {plan.name === 'Enterprise' ? 'Talk to us' : 'Start here'}
               </Link>
             </motion.div>
           ))}
         </div>
+
+        <p className="mt-8 font-mono text-[10px] uppercase tracking-widest text-secondaryText/70">
+          Prices in USD per facility · billed monthly or yearly · taxes excluded
+        </p>
       </div>
     </section>
   );

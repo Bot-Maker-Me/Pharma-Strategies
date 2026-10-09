@@ -35,7 +35,7 @@ export function Statement() {
   const drift = useTransform(scrollYProgress, [0, 1], [30, -30]);
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-raisedDark py-28 sm:py-32">
+    <section ref={ref} className="relative overflow-hidden bg-raisedDark py-28 lg:py-36">
       {/* Texture: ledger rules + a cool glow, both purely decorative */}
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-background opacity-30" />
       <motion.div
@@ -48,13 +48,14 @@ export function Statement() {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-midnight/60"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="ed-container relative">
         <div className="mb-10 flex items-center gap-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-secondaryText">
+          <span aria-hidden className="h-px w-8 bg-accentRed" />
+          <p className="font-mono text-[11px] uppercase tracking-widest text-secondaryText">
             § 02 — STATEMENT
           </p>
           <div className="h-px flex-1 bg-hairline" />
-          <p className="hidden font-mono text-xs uppercase tracking-widest text-accentRed sm:block">
+          <p className="hidden font-mono text-[11px] uppercase tracking-widest text-accentRed sm:block">
             Signed, not summarised
           </p>
         </div>

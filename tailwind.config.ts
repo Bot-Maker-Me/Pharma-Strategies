@@ -19,8 +19,8 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-        button: '2px',
-        panel: '12px',
+        button: '3px',
+        panel: '14px',
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -63,20 +63,26 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        // Dark midnight palette for Pharma Strategies
-        midnight: '#0B1220',
-        raisedDark: '#131E33',
-        hairline: '#26344D',
-        primaryText: '#EDE6DA',
-        secondaryText: '#8C9BB3',
-        accentRed: '#B8323C',
-        creamSheet: '#EDE6DA',
-        supportingBlue: '#1D3557',
+        // Pharma Strategies palette — the only colours used on the site
+        midnight: '#0B1220', // page base
+        raisedDark: '#111827', // raised band / card base
+        hairline: '#24314B', // 1px rules and borders
+        primaryText: '#F5F0E8', // cream off-white
+        secondaryText: '#9AA7BD', // muted navy-grey copy
+        accentRed: '#C23B3B', // emphasis + CTAs, used sparingly
+        accentRedBright: '#E04A4A', // hover / focus state of the accent
+        creamSheet: '#F5F0E8', // cream cards and ledger paper
+        supportingBlue: '#1D3557', // ambient light only
       },
       fontFamily: {
-        sans: ['var(--font-ibm-plex-sans)', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-fraunces)', 'serif'],
-        mono: ['var(--font-ibm-plex-mono)', 'monospace'],
+        sans: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-display)', 'Georgia', 'Times New Roman', 'serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+      },
+      boxShadow: {
+        soft: 'inset 0 1px 0 rgba(245,240,232,0.07), inset 0 0 60px rgba(29,53,87,0.16), 0 20px 44px -28px rgba(0,0,0,0.9)',
+        lift: 'inset 0 1px 0 rgba(245,240,232,0.09), inset 0 0 90px rgba(29,53,87,0.2), 0 56px 96px -48px rgba(0,0,0,1)',
+        paper: 'inset 0 1px 0 rgba(255,255,255,0.6), 0 40px 80px -40px rgba(0,0,0,0.95)',
       },
       keyframes: {
         'accordion-down': {
@@ -107,6 +113,10 @@ const config: Config = {
           from: { transform: 'translateX(0)' },
           to: { transform: 'translateX(-100%)' },
         },
+        'stamp-press': {
+          from: { opacity: '0', transform: 'scale(1.25) rotate(-12deg)' },
+          to: { opacity: '0.9', transform: 'scale(1) rotate(-12deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -116,6 +126,7 @@ const config: Config = {
         marquee: 'marquee var(--duration) linear infinite',
         'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
         'star-move': 'star-move var(--star-move-duration, 6s) linear infinite',
+        'stamp-press': 'stamp-press 0.3s cubic-bezier(0.22, 1, 0.36, 1) both',
       },
     },
   },
