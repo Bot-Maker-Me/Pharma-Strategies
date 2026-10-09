@@ -49,7 +49,13 @@ export function SectionHeading({
                 : 'text-[clamp(1.85rem,4.2vw,3.4rem)] leading-[1.12]'
             )}
           >
-            <SplitText text={title} splitType="lines" delay={110} duration={1.1} />
+            <SplitText
+              text={title}
+              splitType="lines"
+              delay={110}
+              duration={1.1}
+              blurChars={size === 'default'}
+            />
           </h2>
         </div>
 

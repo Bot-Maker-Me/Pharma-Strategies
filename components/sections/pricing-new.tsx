@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { SectionHeading } from '@/components/shared/section-heading';
+import { NumberTicker } from '@/components/magicui/number-ticker';
 import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 
@@ -107,7 +108,12 @@ export function PricingNew() {
 
               <div className="mb-8 flex items-baseline gap-2">
                 <span className="font-heading text-5xl leading-none text-primaryText tabular-nums">
-                  ${isMonthly ? plan.monthly : plan.yearly}
+                  $
+                  <NumberTicker
+                    value={isMonthly ? plan.monthly : plan.yearly}
+                    duration={900}
+                    className="font-heading"
+                  />
                 </span>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
                   / facility / mo

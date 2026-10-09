@@ -2,16 +2,31 @@
 
 import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import { motion, useSpring, useTransform, type MotionValue } from 'framer-motion';
 import { gsap, ScrollTrigger, DESIGN_EASE, DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { Magnet, SplitText } from '@/components/react-bits';
+import { NumberTicker } from '@/components/magicui/number-ticker';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 
 // Silk is WebGL (OGL) — keep it out of the main bundle and only mount it when
 // it can actually render (see capability detection below).
 const Silk = lazy(() => import('@/components/react-bits/silk'));
+
+/** Recent movements, shown in the hero masthead — the same register, live. */
+const latestEntries = [
+  '07 Oct · Oxycodone 5mg · 50 in',
+  '07 Oct · Fentanyl 25µg · 85 out',
+  '06 Oct · Morphine 10mg · 60 out',
+];
+
+/** Register readouts — product state, not marketing numbers. */
+const readouts = [
+  { label: 'Entries today', value: 128 },
+  { label: 'Substances on file', value: 24 },
+  { label: 'Signature pairs', value: 48 },
+];
 
 const ledgerRows = [
   { date: '07 Oct 26', drug: 'Oxycodone 5mg', qtyIn: '50', qtyOut: '32', balance: '18' },
@@ -117,7 +132,8 @@ export function HeroNew() {
 
       const timeline = gsap.timeline({ defaults: { ease: DESIGN_EASE, duration: 1.05 } });
       timeline
-        .from('[data-hero-label]', { opacity: 0, x: -22, duration: 0.85 }, 0.1)
+        .from('[data-hero-masthead]', { opacity: 0, y: -18, duration: 0.9 }, 0)
+        .from('[data-hero-label]', { opacity: 0, x: -22, duration: 0.85 }, 0.15)
         .from('[data-hero-para]', { opacity: 0, y: 28 }, 0.7)
         .from('[data-hero-cta]', { opacity: 0, y: 28, duration: 0.9, stagger: 0.12 }, 0.85)
         .from(
@@ -131,7 +147,8 @@ export function HeroNew() {
           },
           0.45
         )
-        .from('[data-hero-chip]', { opacity: 0, y: 32, duration: 0.9, stagger: 0.15 }, 1.3);
+        .from('[data-hero-chip]', { opacity: 0, y: 32, duration: 0.9, stagger: 0.15 }, 1.3)
+        .from('[data-hero-rail]', { opacity: 0, y: 26, duration: 0.9 }, 1.4);
     },
     { scope: sectionRef, dependencies: [reduced] }
   );
@@ -270,8 +287,38 @@ export function HeroNew() {
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent to-[#0B1220]" />
       </div>
 
-      <div className="ed-container relative z-10 flex min-h-[calc(100vh-72px)] items-center">
-        <div className="grid w-full grid-cols-1 items-center gap-16 py-20 lg:grid-cols-12 lg:gap-8">
+      <div className="ed-container relative z-10 flex min-h-[calc(100vh-72px)] flex-col justify-between gap-8 py-8">
+        {/* Masthead: what this is, and that the register is live */}
+        <div data-hero-masthead className="flex items-center gap-6 border-b border-hairline pb-5">
+          <span className="flex flex-none items-center gap-2.5 font-mono text-[10px] uppercase tracking-widest text-primaryText">
+            <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-accentRed" />
+            Live register
+          </span>
+
+          <div className="hidden min-w-0 flex-1 items-center gap-8 md:flex [mask-image:linear-gradient(to_right,black_72%,transparent)]">
+            {latestEntries.map((entry) => (
+              <span
+                key={entry}
+                className="whitespace-nowrap font-mono text-[10px] uppercase tracking-widest text-secondaryText"
+              >
+                {entry}
+              </span>
+            ))}
+          </div>
+
+          <span className="ml-auto flex flex-none items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+            Scroll
+            <motion.span
+              aria-hidden
+              animate={reduced ? undefined : { y: [0, 4, 0] }}
+              transition={reduced ? undefined : { duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <ArrowDown className="h-3.5 w-3.5" />
+            </motion.span>
+          </span>
+        </div>
+
+        <div className="grid w-full grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-8">
           {/* Left: copy */}
           <div className="lg:col-span-6">
             <p
@@ -293,6 +340,7 @@ export function HeroNew() {
                 delay={110}
                 duration={1.1}
                 highlight="COUNTED"
+                blurChars
               />
             </h1>
 
@@ -331,7 +379,7 @@ export function HeroNew() {
             <div
               ref={stageRef}
               data-hero-stage
-              className="relative h-[540px] w-full"
+              className="relative h-[460px] w-full"
               style={{ clipPath: 'inset(0% 0% 0% 0% round 14px)', willChange: 'transform' }}
             >
               <motion.div
@@ -355,14 +403,16 @@ export function HeroNew() {
                     <p className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
                       Counted today
                     </p>
-                    <p className="font-heading text-2xl text-primaryText">128</p>
+                    <p className="font-heading text-2xl text-primaryText">
+                      <NumberTicker value={128} duration={1400} />
+                    </p>
                   </div>
                 </DriftingChip>
 
                 {/* Ledger sheet */}
                 <div
                   ref={sheetRef}
-                  className="paper-sheet absolute right-0 top-16 w-full max-w-[540px] rounded-[10px] p-6 pb-28"
+                  className="paper-sheet absolute right-0 top-12 w-full max-w-[540px] rounded-[10px] p-6 pb-24"
                 >
                   <div
                     aria-hidden
@@ -428,7 +478,7 @@ export function HeroNew() {
 
                 {/* Signatures */}
                 <DriftingChip
-                  className="absolute left-0 top-[400px] z-30 w-48"
+                  className="absolute left-0 top-[352px] z-30 w-48"
                   depth={1.4}
                   mouseX={pointerX}
                   mouseY={pointerY}
@@ -465,16 +515,23 @@ export function HeroNew() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Scroll hint */}
-      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">Scroll</p>
-        <motion.div
-          className="h-8 w-px bg-hairline"
-          animate={reduced ? undefined : { y: [0, 10, 0], opacity: [0.4, 1, 0.4] }}
-          transition={reduced ? undefined : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        {/* Register readouts — the numbers below are the register's own state */}
+        <div
+          data-hero-rail
+          className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-hairline pt-7 sm:grid-cols-3"
+        >
+          {readouts.map((readout) => (
+            <div key={readout.label}>
+              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                {readout.label}
+              </p>
+              <p className="font-heading text-3xl tabular-nums text-primaryText">
+                <NumberTicker value={readout.value} duration={1600} />
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

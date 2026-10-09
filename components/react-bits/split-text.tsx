@@ -19,6 +19,11 @@ interface SplitTextProps {
   mask?: boolean;
   /** Word revealed with the outline → filled red wipe (lines mode only). */
   highlight?: string;
+  /**
+   * Lines mode only: pair the masked line slide with a per-character
+   * blur-in-up, so the copy resolves from blur as the line lands.
+   */
+  blurChars?: boolean;
   /** Fires once the reveal (and accent wipe) has finished. */
   onComplete?: () => void;
 }
@@ -62,8 +67,9 @@ function renderLineContent(words: string[], highlight: string | undefined): Reac
  *
  * - `chars` / `words`: GSAP reveal, opt in to scroll triggering.
  * - `lines`: GSAP SplitText splits the copy into masked lines that slide up
- *   (0.9s, 0.1s stagger by default). Pass `highlight` to render one word as an
- *   outline that wipes to filled red once the lines have landed.
+ *   (1.1s, 0.11s stagger by default). Pass `highlight` to render one word as an
+ *   outline that wipes to filled red once the lines have landed, and
+ *   `blurChars` to pair the line slide with a per-character blur-in-up.
  *
  * The full text is exposed to assistive tech via `aria-label` while the
  * animated fragments stay `aria-hidden`. Reduced motion shows the final state.
@@ -77,6 +83,7 @@ export function SplitText({
   trigger = true,
   mask,
   highlight,
+  blurChars = false,
   onComplete,
 }: SplitTextProps) {
   const scope = useRef<HTMLSpanElement>(null);
@@ -142,27 +149,57 @@ export function SplitText({
       if (!scope.current) return;
       el.classList.add('split-lines--ready');
       split = new GSAPSplitText(el, {
-        type: 'lines',
+        type: blurChars ? 'lines,chars' : 'lines',
         mask: maskLines ? 'lines' : undefined,
         autoSplit: true,
         onSplit: (self) => {
+          const chars = self.chars ?? [];
+
           // Re-splits (resize / late font load) snap to the final state so the
           // reveal only ever plays once.
-          if (done) return gsap.set(self.lines, { yPercent: 0, opacity: 1 });
-          return gsap.from(self.lines, {
-            yPercent: 100,
-            opacity: 0,
-            duration,
-            ease: DESIGN_EASE,
-            stagger: delay / 1000,
+          if (done) {
+            gsap.set(self.lines, { yPercent: 0, opacity: 1 });
+            if (chars.length) gsap.set(chars, { opacity: 1, filter: 'blur(0px)' });
+            return undefined;
+          }
+
+          const timeline = gsap.timeline({
             onComplete: finish,
-            // The line reveal has to wait for the section to be reached —
-            // without this every heading on the page plays at load and the
-            // whole document looks static while scrolling.
-            scrollTrigger: trigger
-              ? { trigger: el, start: 'top 88%', once: true }
-              : undefined,
+            // The reveal has to wait for the section to be reached — without
+            // this every heading on the page plays at load and the whole
+            // document looks static while scrolling.
+            scrollTrigger: trigger ? { trigger: el, start: 'top 88%', once: true } : undefined,
           });
+
+          // Beat 1 — the masked line slides up from behind its own mask.
+          timeline.from(
+            self.lines,
+            {
+              yPercent: 100,
+              duration,
+              ease: DESIGN_EASE,
+              stagger: delay / 1000,
+            },
+            0
+          );
+
+          // Beat 2 — characters resolve out of blur over the same beat.
+          if (chars.length) {
+            timeline.fromTo(
+              chars,
+              { opacity: 0, filter: 'blur(12px)' },
+              {
+                opacity: 1,
+                filter: 'blur(0px)',
+                duration: duration * 0.8,
+                ease: 'power2.out',
+                stagger: Math.max(0.014, delay / 1000 / 4),
+              },
+              0.1
+            );
+          }
+
+          return timeline;
         },
       });
     };
@@ -180,10 +217,10 @@ export function SplitText({
       split?.kill();
       split?.revert();
       gsap.killTweensOf(el.querySelectorAll('.split-accent__fill'));
-      gsap.killTweensOf(el.querySelectorAll('.split-line'));
+      gsap.killTweensOf(el.querySelectorAll('.split-line, .split-char'));
       el.classList.remove('split-lines--ready', 'split-lines--filled');
     };
-  }, [isLines, reduced, text, delay, duration, maskLines, onComplete, trigger]);
+  }, [isLines, reduced, text, delay, duration, maskLines, onComplete, trigger, blurChars]);
 
   return (
     <span ref={scope} className={cn(isLines && 'split-lines', className)} aria-label={text}>

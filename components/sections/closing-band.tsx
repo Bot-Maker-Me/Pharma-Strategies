@@ -83,6 +83,7 @@ export function ClosingBand() {
                 delay={130}
                 duration={1.1}
                 highlight="count"
+                blurChars
               />
             </h2>
             <p className="mb-10 max-w-md font-sans text-lg text-secondaryText">
