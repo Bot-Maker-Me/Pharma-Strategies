@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { SectionHeading } from '@/components/shared/section-heading';
 
 const plans = [
   {
@@ -36,9 +37,11 @@ export function PricingNew() {
   return (
     <section className="py-24 bg-midnight">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 08 — PRICING
-        </p>
+        <SectionHeading
+          label="§ 08 — PRICING"
+          title="Priced per facility"
+          description="Same register on every plan. What changes is how many facilities and staff it covers."
+        />
 
         {/* Toggle */}
         <div className="flex items-center gap-4 mb-12">

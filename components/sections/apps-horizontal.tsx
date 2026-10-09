@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { SectionHeading } from '@/components/shared/section-heading';
 
 const apps = [
   {
@@ -119,9 +120,12 @@ export function AppsHorizontal() {
     <section ref={containerRef} className="relative h-[280vh] bg-midnight">
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-8">
-            § 06 — APPS
-          </p>
+          <SectionHeading
+            label="§ 06 — APPS"
+            title="Apps that share one register"
+            description="Each app reads and writes the same ledger, so the counts never diverge."
+            size="compact"
+          />
         </div>
 
         <motion.div

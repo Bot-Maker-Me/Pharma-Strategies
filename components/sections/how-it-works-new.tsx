@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { SectionHeading } from '@/components/shared/section-heading';
 
 const steps = [
   {
@@ -94,9 +95,11 @@ export function HowItWorksNew() {
   return (
     <section ref={containerRef} className="py-24 bg-raisedDark">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 07 — HOW IT WORKS
-        </p>
+        <SectionHeading
+          label="§ 07 — HOW IT WORKS"
+          title="From account to first count"
+          description="Facility, substances, then straight into the register."
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left: Timeline */}

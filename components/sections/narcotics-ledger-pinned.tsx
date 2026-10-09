@@ -2,20 +2,40 @@
 
 import { useRef, useState } from 'react';
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { SectionHeading } from '@/components/shared/section-heading';
+import { DESIGN_EASE_ARRAY } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 
 const steps = [
   {
     title: 'Receive',
     description: 'Log incoming controlled substances with dual signatures.',
+    nav: 'Deliveries',
+    details: [
+      'Delivery checked against the invoice',
+      'Both signatures captured at the counter',
+      'Balance moves in the same row',
+    ],
   },
   {
     title: 'Count',
     description: 'Track inventory in real time with automatic discrepancy alerts.',
+    nav: 'Discrepancies',
+    details: [
+      'Cycle counts run on your schedule',
+      'Variance flagged the moment it appears',
+      'Oxycodone 5mg · off by 2',
+    ],
   },
   {
     title: 'Sign',
     description: 'Complete transactions with verified electronic signatures.',
+    nav: 'Audit log',
+    details: [
+      'One signer receives, one confirms',
+      'Signed entries lock in place',
+      'Audit export reads the same record',
+    ],
   },
 ];
 
@@ -25,6 +45,11 @@ const rows = [
   { date: '06 Oct', drug: 'Morphine 10mg', inQty: '75', outQty: '60', bal: '15' },
   { date: '06 Oct', drug: 'Hydromorphone 2mg', inQty: '40', outQty: '38', bal: '2' },
 ];
+
+const navItems = ['Register', 'Deliveries', 'Discrepancies', 'Audit log', 'Staff'];
+
+/** Date and the three numeric columns stay fixed; the drug name takes the rest. */
+const ROW_GRID = 'grid grid-cols-[3rem_minmax(0,1fr)_2.75rem_2.75rem_2.75rem] gap-2';
 
 export function NarcoticsLedgerPinned() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,14 +65,16 @@ export function NarcoticsLedgerPinned() {
   });
 
   return (
-    <section ref={containerRef} className="py-24 bg-raisedDark">
+    <section ref={containerRef} className="bg-raisedDark py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-10">
-          § 05 — NARCOTICS LEDGER
-        </p>
+        <SectionHeading
+          label="§ 05 — NARCOTICS LEDGER"
+          title="Receive, count, sign"
+          description="Three steps, in the order you already work them. The register follows along."
+        />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Captions */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          {/* Left: the three steps */}
           <div className="relative">
             <ol className="space-y-10">
               {steps.map((step, index) => {
@@ -57,53 +84,121 @@ export function NarcoticsLedgerPinned() {
                     key={step.title}
                     className={cn(
                       'border-l-2 pl-6 transition-all duration-500',
-                      isActive ? 'border-accentRed opacity-100' : 'border-hairline opacity-40'
+                      isActive ? 'border-accentRed' : 'border-hairline'
                     )}
                   >
-                    <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-2">
-                      Step {index + 1}
+                    <div className="mb-2 flex items-center gap-3">
+                      <span
+                        className={cn(
+                          'h-1.5 w-1.5 rounded-full transition-colors duration-500',
+                          isActive ? 'bg-accentRed' : 'bg-hairline'
+                        )}
+                      />
+                      <p className="font-mono text-xs uppercase tracking-widest text-secondaryText">
+                        Step {String(index + 1).padStart(2, '0')}
+                      </p>
+                    </div>
+
+                    <h3
+                      className={cn(
+                        'mb-2 font-heading text-3xl transition-colors duration-500',
+                        isActive ? 'text-primaryText' : 'text-primaryText/50'
+                      )}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      className={cn(
+                        'max-w-md font-sans transition-colors duration-500',
+                        isActive ? 'text-secondaryText' : 'text-secondaryText/50'
+                      )}
+                    >
+                      {step.description}
                     </p>
-                    <h3 className="font-heading text-3xl text-primaryText mb-2">{step.title}</h3>
-                    <p className="font-sans text-secondaryText max-w-md">{step.description}</p>
+
+                    <ul className="mt-4 space-y-2">
+                      {step.details.map((detail, detailIndex) => (
+                        <li
+                          key={detail}
+                          className={cn(
+                            'flex items-baseline gap-3 font-mono text-xs transition-all duration-500',
+                            isActive
+                              ? 'translate-x-0 text-secondaryText opacity-100'
+                              : '-translate-x-1 text-secondaryText opacity-40'
+                          )}
+                          style={{ transitionDelay: isActive ? `${detailIndex * 60}ms` : '0ms' }}
+                        >
+                          <span className="text-accentRed">—</span>
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 );
               })}
             </ol>
 
-            {/* Scroll progress */}
-            <div className="mt-10 h-px w-full overflow-hidden bg-hairline">
-              <motion.div
-                className="h-full origin-left bg-accentRed"
-                style={{ scaleX: scrollYProgress }}
-              />
+            {/* Scroll progress + step counter */}
+            <div className="mt-12 flex items-center gap-4">
+              <div className="h-px flex-1 overflow-hidden bg-hairline">
+                <motion.div
+                  className="h-full origin-left bg-accentRed"
+                  style={{ scaleX: scrollYProgress }}
+                />
+              </div>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText tabular-nums">
+                {String(active + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}
+              </span>
             </div>
           </div>
 
-          {/* Right: UI mock (sticky) */}
+          {/* Right: register mock, sticky while the steps advance */}
           <div className="lg:sticky lg:top-24">
-            <div className="border border-hairline bg-midnight p-4">
-              <div className="bg-midnight border border-hairline p-4">
-                <div className="flex gap-4 mb-4">
-                  <div className="w-48 space-y-1">
-                    <div className="font-mono text-xs uppercase tracking-widest text-primaryText mb-3">
+            <div className="rounded-panel border border-hairline bg-midnight p-4">
+              <div className="rounded-panel border border-hairline bg-midnight p-4">
+                <div className="flex gap-4">
+                  {/* Nav */}
+                  <nav className="w-40 flex-none space-y-1 sm:w-48">
+                    <div className="mb-3 font-mono text-xs uppercase tracking-widest text-primaryText">
                       Navigation
                     </div>
-                    <div className="h-8 bg-hairline/30 rounded-button flex items-center px-3">
-                      <span className="font-mono text-xs text-primaryText">Register</span>
-                    </div>
-                    {['Deliveries', 'Discrepancies', 'Audit log', 'Staff'].map((item) => (
-                      <div key={item} className="h-6 bg-hairline/10 rounded-button flex items-center px-3">
-                        <span className="font-mono text-xs text-secondaryText">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+                    {navItems.map((item) => {
+                      const isCurrent = item === 'Register';
+                      const isTarget = item === steps[active].nav;
+                      return (
+                        <div
+                          key={item}
+                          className={cn(
+                            'flex h-8 items-center rounded-button px-3 font-mono text-xs transition-colors duration-500',
+                            isCurrent
+                              ? 'bg-hairline/30 text-primaryText'
+                              : isTarget
+                                ? 'bg-accentRed/10 text-accentRed'
+                                : 'bg-hairline/10 text-secondaryText'
+                          )}
+                        >
+                          {item}
+                        </div>
+                      );
+                    })}
+                  </nav>
 
-                  <div className="flex-1 space-y-2">
-                    <div className="h-10 bg-hairline/20 rounded-button flex items-center px-4">
+                  {/* Register */}
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex h-10 items-center justify-between rounded-button bg-hairline/20 px-4">
                       <span className="font-heading text-sm text-primaryText">Narcotics Register</span>
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                        {steps[active].title}
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-5 gap-2 bg-hairline/10 p-2 rounded-button">
+                    <div
+                      className={cn(
+                        ROW_GRID,
+                        'rounded-button bg-hairline/10 p-2 transition-all duration-500',
+                        active === 1 && 'ring-1 ring-inset ring-accentRed/40'
+                      )}
+                    >
                       {['Date', 'Drug', 'In', 'Out', 'Bal'].map((heading, i) => (
                         <div
                           key={heading}
@@ -117,52 +212,105 @@ export function NarcoticsLedgerPinned() {
                       ))}
                     </div>
 
-                    <div className="space-y-1">
-                      {rows.map((row) => (
-                        <div key={row.drug} className="grid grid-cols-5 gap-2 bg-hairline/5 p-2 rounded-button">
-                          <div className="font-mono text-xs text-primaryText tabular-nums">{row.date}</div>
-                          <div className="font-sans text-xs text-primaryText">{row.drug}</div>
-                          <div className="font-mono text-xs text-primaryText text-right tabular-nums">{row.inQty}</div>
-                          <div className="font-mono text-xs text-primaryText text-right tabular-nums">{row.outQty}</div>
-                          <div className="font-mono text-xs text-primaryText text-right tabular-nums">{row.bal}</div>
+                    <div
+                      className={cn(
+                        'space-y-1 rounded-button transition-all duration-500',
+                        active === 0 && 'ring-1 ring-inset ring-accentRed/40'
+                      )}
+                    >
+                      {rows.map((row, rowIndex) => (
+                        <div
+                          key={row.drug}
+                          className={cn(
+                            ROW_GRID,
+                            'rounded-button p-2 transition-colors duration-500',
+                            active === 0 && rowIndex === 0 ? 'bg-accentRed/10' : 'bg-hairline/5'
+                          )}
+                        >
+                          <div className="font-mono text-xs tabular-nums text-primaryText">
+                            {row.date}
+                          </div>
+                          <div className="truncate font-sans text-xs text-primaryText">{row.drug}</div>
+                          <div className="text-right font-mono text-xs tabular-nums text-primaryText">
+                            {row.inQty}
+                          </div>
+                          <div className="text-right font-mono text-xs tabular-nums text-primaryText">
+                            {row.outQty}
+                          </div>
+                          <div
+                            className={cn(
+                              'rounded text-right font-mono text-xs tabular-nums text-primaryText transition-colors duration-500',
+                              active === 1 && 'text-accentRed'
+                            )}
+                          >
+                            {row.bal}
+                          </div>
                         </div>
                       ))}
 
-                      <div className="grid grid-cols-5 gap-2 bg-accentRed/10 p-2 rounded-button border-l-2 border-l-accentRed">
-                        <div className="font-mono text-xs text-primaryText tabular-nums">05 Oct</div>
-                        <div className="font-sans text-xs text-primaryText">Oxycodone 5mg</div>
-                        <div className="font-mono text-xs text-primaryText text-right tabular-nums">50</div>
-                        <div className="font-mono text-xs text-primaryText text-right tabular-nums">45</div>
-                        <div className="font-mono text-xs text-primaryText text-right tabular-nums">5</div>
-                      </div>
-                      <div className="grid grid-cols-5 gap-2">
-                        <div className="col-span-5">
-                          <span className="font-mono text-xs text-accentRed uppercase tracking-widest">
-                            Discrepancy
-                          </span>
+                      <div
+                        className={cn(
+                          ROW_GRID,
+                          'rounded-button border-l-2 border-l-accentRed p-2 transition-colors duration-500',
+                          active === 1 ? 'bg-accentRed/20' : 'bg-accentRed/10'
+                        )}
+                      >
+                        <div className="font-mono text-xs tabular-nums text-primaryText">05 Oct</div>
+                        <div className="truncate font-sans text-xs text-primaryText">Oxycodone 5mg</div>
+                        <div className="text-right font-mono text-xs tabular-nums text-primaryText">
+                          50
                         </div>
+                        <div className="text-right font-mono text-xs tabular-nums text-primaryText">
+                          45
+                        </div>
+                        <div className="text-right font-mono text-xs tabular-nums text-primaryText">5</div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-between gap-2 px-2">
+                        <span className="font-mono text-xs uppercase tracking-widest text-accentRed">
+                          Discrepancy
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-secondaryText">
+                          Count off by 2
+                        </span>
                       </div>
                     </div>
 
-                    <div className="mt-4 p-4 bg-hairline/10 border border-hairline rounded-button relative">
-                      <div className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-3">
+                    {/* Duplicated signatures */}
+                    <div
+                      className={cn(
+                        'relative mt-4 rounded-button border border-hairline bg-hairline/10 p-4 transition-all duration-500',
+                        active === 2 && 'ring-1 ring-inset ring-accentRed/40'
+                      )}
+                    >
+                      <div className="mb-3 font-mono text-xs uppercase tracking-widest text-secondaryText">
                         Dual Signatures
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         {['JD', 'SM'].map((initials) => (
                           <div
                             key={initials}
-                            className="h-16 bg-hairline/20 rounded-button flex items-center justify-center"
+                            className="flex h-16 items-center justify-center rounded-button bg-hairline/20"
                           >
                             <span className="font-mono text-sm text-primaryText">{initials}</span>
                           </div>
                         ))}
                       </div>
-                      <div className="absolute bottom-2 right-2 w-16 h-16 rounded-full border-4 border-accentRed flex items-center justify-center bg-accentRed/10">
-                        <span className="font-mono text-[10px] font-bold text-accentRed uppercase tracking-widest">
+                      <motion.div
+                        aria-hidden
+                        initial={false}
+                        animate={
+                          active === 2
+                            ? { scale: 1, opacity: 0.9, rotate: -12 }
+                            : { scale: 1.25, opacity: 0, rotate: -12 }
+                        }
+                        transition={{ duration: 0.35, ease: DESIGN_EASE_ARRAY }}
+                        className="absolute bottom-2 right-2 flex h-16 w-16 items-center justify-center rounded-full border-4 border-accentRed bg-accentRed/10"
+                      >
+                        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-accentRed">
                           Verified
                         </span>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                 </div>

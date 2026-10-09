@@ -2,6 +2,7 @@
 
 import { useRef, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import { SectionHeading } from '@/components/shared/section-heading';
 import { cn } from '@/lib/utils';
 
 interface Feature {
@@ -180,9 +181,11 @@ export function FeatureBentoGrid() {
   return (
     <section className="py-24 bg-midnight">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 03 — FEATURES
-        </p>
+        <SectionHeading
+          label="§ 03 — FEATURES"
+          title="The register, in six parts"
+          description="Each part exists because a count had to be proven later: who touched it, when, and with whose signature."
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {features.map((feature, index) => (

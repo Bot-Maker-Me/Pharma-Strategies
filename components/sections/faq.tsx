@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { StaggerReveal } from '@/components/motion/stagger-reveal';
+import { SectionHeading } from '@/components/shared/section-heading';
 
 const faqs = [
   {
@@ -38,9 +39,11 @@ export function FAQ() {
   return (
     <section className="py-24 bg-midnight">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-secondaryText mb-4">
-          § 09 — FAQ
-        </p>
+        <SectionHeading
+          label="§ 09 — FAQ"
+          title="Questions we get asked"
+          description="Anything not covered here, ask us in the demo."
+        />
 
         <StaggerReveal className="max-w-3xl space-y-4" stagger={0.08}>
           {faqs.map((faq, index) => (
