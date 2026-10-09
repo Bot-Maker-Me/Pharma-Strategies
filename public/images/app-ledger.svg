@@ -1,0 +1,15 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#0B1220"/>
+  <defs>
+    <pattern id="ledger-lines" width="800" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="40" x2="800" y2="40" stroke="#26344D" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#ledger-lines)"/>
+  <rect x="50" y="100" width="700" height="400" fill="#131E33" stroke="#26344D" stroke-width="1"/>
+  <text x="70" y="130" font-family="monospace" font-size="12" fill="#8C9BB3">DATE</text>
+  <text x="200" y="130" font-family="monospace" font-size="12" fill="#8C9BB3">DRUG</text>
+  <text x="500" y="130" font-family="monospace" font-size="12" fill="#8C9BB3">IN</text>
+  <text x="600" y="130" font-family="monospace" font-size="12" fill="#8C9BB3">OUT</text>
+  <text x="700" y="130" font-family="monospace" font-size="12" fill="#8C9BB3">BAL</text>
+</svg>

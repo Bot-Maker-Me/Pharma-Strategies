@@ -1,45 +1,73 @@
-# AI_RULES.md
+# AI Rules — Production SaaS + OpenDesign Quality
 
-Project guidance for AI assistants working in this codebase. Keep changes consistent with the conventions below.
+## Core Mission
+Build production SaaS UI that looks intentional and expensive — never generic AI slop.
 
-## Tech Stack
+## Tech Stack (mandatory)
+- Next.js (App Router) + React 18 + TypeScript
+- Tailwind CSS only
+- shadcn/ui as base primitives
+- Magic UI for polished marketing micro-interactions
+- Aceternity UI for high-impact heroes, spotlight, beams, 3D cards
+- Framer Motion / motion (GSAP + Lenis already power scroll in this app)
+- lucide-react icons
+- Prefer Vercel / Linear / Stripe level craft
 
-- **React 18** with function components and hooks — no class components.
-- **TypeScript** in strict mode — type everything, avoid `any`.
-- **Vite** as the build tool and dev server.
-- **React Router** for all routing; routes live in `src/App.tsx`.
-- **Tailwind CSS** for all styling — no separate CSS files or CSS-in-JS.
-- **shadcn/ui** (Radix UI primitives) for ready-made accessible components.
-- **lucide-react** for icons.
-- **Recharts** for charts and data visualization.
-- **Native Web APIs / fetch** for data and persistence — no ORM or state library unless explicitly requested.
+## OpenDesign Quality Layer
+- Follow DESIGN.md as the visual source of truth (tokens, type, spacing, motion, brand voice)
+- Treat DESIGN.md like OpenDesign design systems: one system, every screen consistent
+- No random aesthetic decisions if DESIGN.md already defines them
+- Prefer real product states: loading, empty, error, success, disabled
 
-## Project Structure
+## Anti-Slop Rules (hard)
+FORBIDDEN by default:
+- Purple gradient hero with no brand reason
+- Three identical feature cards
+- Fake metrics / lorem stats
+- Inter-only boring typography with no hierarchy
+- Generic "Unlock the power of AI" copy
+- Decorative junk animations that hurt clarity
 
-- All source code lives in `src/`.
-- Pages go in `src/pages/`; components go in `src/components/`.
-- The default page is `src/pages/Index.tsx`.
-- Update the main page (`Index.tsx`) so new components are actually visible.
-- Prefer small, focused files and components over large ones.
+REQUIRED:
+- Clear hierarchy
+- Intentional spacing rhythm
+- Strong contrast
+- Accessible labels + keyboard paths
+- Responsive layout
+- Real empty/loading/error states
 
-## Library Usage Rules
+## Library priority
+1. shadcn/ui → app UI (forms, tables, dialogs, nav, sheets)
+2. Magic UI → marquees, number tickers, shimmer buttons, bento, subtle motion
+3. Aceternity-style → heroes, spotlight, beams, 3D/tilt, cinematic sections
+4. OpenDesign craft principles from DESIGN.md for overall taste and consistency
 
-- **Styling:** Use **Tailwind CSS** utility classes for all layout, spacing, color, and typography. Do not add plain `.css` files, styled-components, or Emotion.
-- **UI components:** Use **shadcn/ui** first. These components are already installed — import them, don't add them again. Never edit the files in `src/components/ui/`; if you need different behavior, build a new component that wraps or composes them.
-- **Radix UI:** Already installed. Use it only via shadcn/ui wrappers or when you need a primitive shadcn doesn't wrap.
-- **Icons:** Use **lucide-react** only. Do not add other icon packs.
-- **Routing:** Use **React Router**; keep all `<Route>` definitions in `src/App.tsx`. Do not add a second router.
-- **Charts:** Use **Recharts**. Do not add Chart.js, D3, or other charting libraries.
-- **Forms & validation:** Use **react-hook-form** with **zod** for schema validation when forms are non-trivial; use plain controlled inputs for simple cases.
-- **Client state:** Prefer React's built-in `useState`/`useReducer`/Context. Only add a state library (e.g. Zustand) if the user explicitly asks.
-- **Server data:** Use **@tanstack/react-query** for async data fetching/caching when needed; otherwise use `fetch` inside `useEffect`.
-- **Dates & utilities:** Use **date-fns** for dates. Use **clsx**/**tailwind-merge** (via the `cn` helper) for conditional class names.
-- **Toasts & dialogs:** Use shadcn/ui's `sonner`/`toast` and `dialog`/`alert-dialog` rather than custom implementations.
-- **Persistence:** Use `localStorage`/`sessionStorage` or the provided database integration. Do not introduce a database client without the user choosing a provider.
+Install via shadcn/registry when possible. Do not reinvent components that registries already provide.
 
-## Code Conventions
+## Plan-First Protocol
+Before coding:
+1. Read AI_RULES.md + DESIGN.md + FEATURE_CATALOG.md + MEMORY.md
+2. Read security.md if touching auth/data/payments
+3. Reuse existing components first
+4. Write a short plan
+5. Implement minimal clean diffs
+6. Append outcome to MEMORY.md
 
-- Never leave placeholder, partial, or TODO code — every shipped feature must be fully functional.
-- Prefer editing related files only; leave unrelated files untouched.
-- Validate only at system boundaries (user input, external APIs).
-- Keep solutions simple — avoid over-engineering, premature abstractions, and unnecessary dependencies.
+## Security defaults
+- No secrets in code
+- Server-side validation always
+- No IDOR
+- Authz checks on every sensitive resource
+- Safe defaults for cookies/sessions
+
+## Structure
+- Routes / pages: `app/` (Next.js App Router). Keep routes valid so the UI stays visible.
+- Components: `components/`
+- UI primitives: `components/ui/` (shadcn — do NOT hand-edit these files)
+- Magic UI: `components/magicui/`
+- Aceternity-style: `components/aceternity/`
+- Marketing / section blocks: `components/sections/`
+- Shared building blocks: `components/shared/`
+- Layout chrome: `components/layout/`
+- Config + content: `config/`
+- Path alias: `@/*` maps to the project root

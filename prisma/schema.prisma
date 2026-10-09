@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  company   String?
+  role      String   @default("user")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  subscriptions Subscription[]
+  auditLogs     AuditLog[]
+
+  @@map("users")
+}
+
+model App {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  name             String
+  tagline          String
+  description      String
+  features         String[]
+  iconUrl          String?  @map("icon_url")
+  category         String
+  priceMonthly     Int?     @map("price_monthly")
+  priceYearly      Int?     @map("price_yearly")
+  externalSignupUrl String? @map("external_signup_url")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
+
+  subscriptions Subscription[]
+
+  @@map("apps")
+}
+
+model Subscription {
+  id               String    @id @default(uuid())
+  userId           String    @map("user_id")
+  appId            String    @map("app_id")
+  plan             String
+  status           String    @default("active")
+  startDate        DateTime  @default(now()) @map("start_date")
+  endDate          DateTime? @map("end_date")
+  stripeCustomerId String?   @map("stripe_customer_id")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, appId])
+  @@map("subscriptions")
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  company   String?
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("leads")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  action    String
+  metadata  Json     @default("{}")
+  timestamp DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}

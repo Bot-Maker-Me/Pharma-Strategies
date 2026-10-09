@@ -1,0 +1,16 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#0B1220"/>
+  <defs>
+    <pattern id="portal-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#26344D" stroke-width="1" opacity="0.4"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#portal-grid)"/>
+  <rect x="50" y="100" width="300" height="400" fill="#131E33" stroke="#26344D" stroke-width="1"/>
+  <rect x="380" y="100" width="370" height="400" fill="#131E33" stroke="#26344D" stroke-width="1"/>
+  <rect x="70" y="120" width="260" height="40" fill="#26344D" opacity="0.3"/>
+  <rect x="70" y="180" width="260" height="40" fill="#26344D" opacity="0.3"/>
+  <rect x="70" y="240" width="260" height="40" fill="#26344D" opacity="0.3"/>
+  <rect x="400" y="120" width="330" height="60" fill="#26344D" opacity="0.2"/>
+  <rect x="400" y="200" width="330" height="280" fill="#26344D" opacity="0.15"/>
+</svg>

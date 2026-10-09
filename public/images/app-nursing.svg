@@ -1,0 +1,13 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#0B1220"/>
+  <defs>
+    <pattern id="nursing-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#26344D" stroke-width="1" opacity="0.4"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#nursing-grid)"/>
+  <rect x="100" y="150" width="600" height="300" fill="#131E33" stroke="#26344D" stroke-width="1"/>
+  <rect x="120" y="170" width="200" height="80" fill="#26344D" opacity="0.3"/>
+  <rect x="120" y="270" width="200" height="80" fill="#26344D" opacity="0.3"/>
+  <rect x="350" y="170" width="320" height="180" fill="#26344D" opacity="0.2"/>
+</svg>
