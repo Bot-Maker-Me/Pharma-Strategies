@@ -168,3 +168,48 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+
+/* React Bits — SplitText (line-mask reveal + accent word outline → fill wipe) */
+.split-lines {
+  display: block;
+  opacity: 0;
+}
+
+.split-lines--ready {
+  opacity: 1;
+}
+
+.split-accent {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.split-accent__outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #b8323c;
+}
+
+.split-accent__fill {
+  position: absolute;
+  inset: 0;
+  color: #b8323c;
+  -webkit-text-stroke: 0;
+  clip-path: inset(0 100% 0 0);
+}
+
+/* Reduced motion: show the final filled state, no wipe */
+.split-lines--filled .split-accent__outline {
+  color: #b8323c;
+  -webkit-text-stroke: 0;
+}
+
+.split-lines--filled .split-accent__fill {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Hero ledger sheen (transform + opacity only) */
+.ledger-sheen {
+  background: radial-gradient(circle, rgba(237, 230, 218, 0.14) 0%, rgba(237, 230, 218, 0) 70%);
+}
+

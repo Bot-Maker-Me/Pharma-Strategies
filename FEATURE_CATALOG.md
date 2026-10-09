@@ -51,11 +51,13 @@ Reuse first — only add a component when nothing below fits.
 - `FadeInOnScroll` — components/motion/fade-in-on-scroll.tsx
 - `StaggerReveal` — components/motion/stagger-reveal.tsx
 - `ParallaxSection` — components/motion/parallax-section.tsx
-- `SplitText` (React Bits) — components/react-bits/split-text.tsx
+- `SplitText` (React Bits) — components/react-bits/split-text.tsx — chars / words / **lines** (masked slide-up) + `highlight` word with an outline → filled-red wipe
 - `ShinyText` (React Bits) — components/react-bits/shiny-text.tsx
 - `StarBorder` (React Bits) — components/react-bits/star-border.tsx
 - `Squares` (React Bits) — components/react-bits/squares.tsx
 - `ClickSpark` (React Bits) — components/react-bits/click-spark.tsx
+- `Magnet` (React Bits) — components/react-bits/magnet.tsx — pulls content toward the cursor (auto-off on touch + reduced motion)
+- `Silk` (React Bits) — components/react-bits/silk.tsx — WebGL flow-field hero background (needs `ogl`); import the **default** export lazily, it is intentionally NOT re-exported from the barrel
 - `CursorGlow` — components/effects/cursor-glow.tsx
 
 ## shadcn/ui primitives (do NOT hand-edit)
