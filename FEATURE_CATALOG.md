@@ -27,12 +27,22 @@ Reuse first — only add a component when nothing below fits.
 - `Spotlight` (Aceternity-style) — components/aceternity/spotlight.tsx
 - `SpotlightCard` — components/aceternity/spotlight-card.tsx
 - `BentoGrid` / `BentoGridItem` (Magic UI) — components/magicui/bento-grid.tsx
-- `Marquee` (Magic UI) — components/magicui/marquee.tsx
-- `NumberTicker` (Magic UI) — components/magicui/number-ticker.tsx
 - `ShimmerButton` (Magic UI) — components/magicui/shimmer-button.tsx
 - `BlurFade` (Magic UI) — components/magicui/blur-fade.tsx
 - `Reveal` — components/shared/reveal.tsx
 - `SectionLabel` — components/shared/section-label.tsx
+
+## Pharma Strategies sections (home page)
+- `Hero` (HeroNew) — components/sections/hero-new.tsx
+- `Statement` — components/sections/statement.tsx
+- `FeatureBentoGrid` — components/sections/feature-bento-grid.tsx
+- `Role tabs` (WhoItsFor) — components/sections/who-its-for.tsx
+- `NarcoticsLedgerPinned` — components/sections/narcotics-ledger-pinned.tsx
+- `Apps strip` (AppsHorizontal) — components/sections/apps-horizontal.tsx
+- `HowItWorksNew` — components/sections/how-it-works-new.tsx
+- `PricingNew` — components/sections/pricing-new.tsx
+- `FAQ` — components/sections/faq.tsx
+- `ClosingBand` — components/sections/closing-band.tsx
 
 ## Motion
 - `SmoothScrollProvider` — components/providers/smooth-scroll-provider.tsx

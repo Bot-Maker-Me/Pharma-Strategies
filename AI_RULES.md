@@ -2,6 +2,7 @@
 
 ## Core Mission
 Build production SaaS UI that looks intentional and expensive — never generic AI slop.
+Pharma Strategies is a dark navy, cream and red editorial ledger design, not generic SaaS.
 
 ## Tech Stack (mandatory)
 - Next.js (App Router) + React 18 + TypeScript
@@ -38,9 +39,12 @@ REQUIRED:
 
 ## Library priority
 1. shadcn/ui → app UI (forms, tables, dialogs, nav, sheets)
-2. Magic UI → marquees, number tickers, shimmer buttons, bento, subtle motion
-3. Aceternity-style → heroes, spotlight, beams, 3D/tilt, cinematic sections
-4. OpenDesign craft principles from DESIGN.md for overall taste and consistency
+2. React Bits → first choice for text effects, backgrounds and cursor effects
+3. Magic UI → marquees, number tickers, shimmer buttons, bento, subtle motion
+4. Aceternity-style → spotlight, beams and 3D cards, used only sparingly and only if they follow DESIGN.md
+5. OpenDesign craft principles from DESIGN.md for overall taste and consistency
+
+DESIGN.md wins over any library default.
 
 Install via shadcn/registry when possible. Do not reinvent components that registries already provide.
 
